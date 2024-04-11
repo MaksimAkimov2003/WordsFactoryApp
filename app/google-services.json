@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "107349556362",
+    "project_id": "words-factory-b9bb8",
+    "storage_bucket": "words-factory-b9bb8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:107349556362:android:45b9314cdafb29f197c173",
+        "android_client_info": {
+          "package_name": "com.akimov.wordsfactory"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQDMIFEe2Ch2W_qxXFKrZ-Fex3lIObvms"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
