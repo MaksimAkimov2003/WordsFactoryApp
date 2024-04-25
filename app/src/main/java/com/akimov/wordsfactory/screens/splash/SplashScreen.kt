@@ -2,7 +2,10 @@ package com.akimov.wordsfactory.screens.splash
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOut
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -74,7 +77,7 @@ fun SplashScreen(
         AnimatedVisibility(
             modifier = Modifier.align(Alignment.Center),
             visible = isVisible,
-            enter = slideInHorizontally()
+            enter = slideInHorizontally(),
         ) {
             animationDurationMillis = transition.totalDurationNanos / 1_000_000
             Image(

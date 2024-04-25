@@ -1,38 +1,48 @@
-package com.akimov.wordsfactory.navigation
+package com.akimov.wordsfactory.navigation.common
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.akimov.wordsfactory.screens.dictionary.DictionaryScreen
+import com.akimov.wordsfactory.navigation.bottomNav.BottomNavHost
 import com.akimov.wordsfactory.screens.login.LoginScreen
 import com.akimov.wordsfactory.screens.onBoarding.OnBoardingScreen
 import com.akimov.wordsfactory.screens.register.RegisterScreen
 import com.akimov.wordsfactory.screens.splash.SplashScreen
 
 
-private const val LAUNCH_SCREEN =  "LAUNCH_SCREEN"
+private const val LAUNCH_SCREEN = "LAUNCH_SCREEN"
 private const val ON_BOARDING = "ON_BOARDING"
 private const val SIGN_UP = "SIGN_UP"
 private const val LOGIN = "LOGIN"
-private const val DICTIONARY = "DICTIONARY"
+
+private const val BOTTOM_NAV_HOST = "BOTTOM_NAV_HOST"
 
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
+
     NavHost(
         navController = navController,
         startDestination = LAUNCH_SCREEN
     ) {
+        // Bottom navigation host
+        composable(route = BOTTOM_NAV_HOST) {
+            BottomNavHost()
+        }
+
+
         composable(route = LAUNCH_SCREEN) {
             SplashScreen(
                 navigateToOnBoarding = {
-                    navController.popBackStack()
-                    navController.navigate(ON_BOARDING)
+                    navController.navigate(ON_BOARDING) {
+                        popUpTo(navController.graph.id)
+                    }
                 },
                 navigateToDictionary = {
-                    navController.popBackStack()
-                    navController.navigate(DICTIONARY)
+                    navController.navigate(BOTTOM_NAV_HOST) {
+                        popUpTo(navController.graph.id)
+                    }
                 }
             )
         }
@@ -45,7 +55,7 @@ fun AppNavigation() {
 
         composable(route = SIGN_UP) {
             RegisterScreen {
-                navController.navigate(DICTIONARY) {
+                navController.navigate(BOTTOM_NAV_HOST) {
                     popUpTo(navController.graph.id)
                 }
             }
@@ -54,7 +64,7 @@ fun AppNavigation() {
         composable(route = LOGIN) {
             LoginScreen(
                 navigateUp = {
-                    navController.navigate(DICTIONARY) {
+                    navController.navigate(BOTTOM_NAV_HOST) {
                         popUpTo(navController.graph.id)
                     }
                 },
@@ -63,9 +73,6 @@ fun AppNavigation() {
                 }
             )
         }
-
-        composable(route = DICTIONARY) {
-            DictionaryScreen()
-        }
     }
 }
+

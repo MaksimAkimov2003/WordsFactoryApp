@@ -44,7 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.akimov.wordsfactory.R
 import com.akimov.wordsfactory.common.components.button.AppOutlinedButton
-import com.akimov.wordsfactory.common.components.button.FilledButton
+import com.akimov.wordsfactory.common.components.button.AppFilledButton
 import com.akimov.wordsfactory.common.components.textField.AppTextField
 import com.akimov.wordsfactory.common.extensions.checkCondition
 import com.akimov.wordsfactory.common.theme.WordsFactoryTheme
@@ -188,7 +188,7 @@ private fun SignInButton(
 
     when (state) {
         LoginScreenState.Content -> {
-            FilledButton(
+            AppFilledButton(
                 modifier = modifier.then(
                     Modifier.onGloballyPositioned {
                         buttonHeight = it.size.height
@@ -205,7 +205,7 @@ private fun SignInButton(
         }
 
         LoginScreenState.Loading -> {
-            FilledButton(
+            AppFilledButton(
                 modifier = modifier.then(Modifier
                     .checkCondition(
                         condition = { buttonHeight == 0 },

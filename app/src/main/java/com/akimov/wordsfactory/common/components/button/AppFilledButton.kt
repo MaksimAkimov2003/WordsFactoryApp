@@ -15,7 +15,7 @@ import com.akimov.wordsfactory.common.theme.WordsFactoryTheme
 import com.akimov.wordsfactory.common.theme.buttonMedium
 
 @Composable
-fun FilledButton(
+fun AppFilledButton(
     modifier: Modifier = Modifier,
     getText: @Composable () -> String,
     onClick: () -> Unit,
@@ -35,7 +35,7 @@ fun FilledButton(
 }
 
 @Composable
-fun FilledButton(
+fun AppFilledButton(
     modifier: Modifier = Modifier,
     content: @Composable RowScope.() -> Unit,
     onClick: () -> Unit,
@@ -54,6 +54,6 @@ fun FilledButton(
 @Composable
 private fun PrimaryButtonPreview() {
     WordsFactoryTheme {
-        FilledButton(getText = { "Primary Button" }) {}
+        AppFilledButton(getText = { "Primary Button" }) {}
     }
 }

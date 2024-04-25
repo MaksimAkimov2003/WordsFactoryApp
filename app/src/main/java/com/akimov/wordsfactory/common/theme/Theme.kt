@@ -17,7 +17,7 @@ private val LightColorScheme = lightColorScheme(
     background = Color.White,
     onPrimary = Color.White,
     onBackground = Color(0xFF78746D),
-    tertiary = Color(0xFFBEBAB3)
+    tertiary = ink
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
@@ -45,6 +45,7 @@ fun WordsFactoryTheme(
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.tertiary.toArgb()
+            window.navigationBarColor = colorScheme.background.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
         }
     }

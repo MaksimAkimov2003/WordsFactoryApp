@@ -15,4 +15,13 @@
     <string name="password">Password</string>
     <string name="sign_in">Sign in</string>
     <string name="please_enter_your_email_and_password">Please enter your email and password</string>
+    <string name="dictionary">Dictionary</string>
+    <string name="training">Training</string>
+    <string name="video">Video</string>
+    <string name="add_to_dictionary">Add to dictionary</string>
+    <string name="no_word">No word</string>
+    <string name="enter_word">Input something to find it in dictionary</string>
+    <string name="part_of_speech">"Part of Speech: "</string>
+    <string name="meanings">Meanings:</string>
+    <string name="example">Example:</string>
 </resources>

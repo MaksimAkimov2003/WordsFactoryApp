@@ -35,7 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.akimov.wordsfactory.R
 import com.akimov.wordsfactory.common.components.button.AppTextButton
-import com.akimov.wordsfactory.common.components.button.FilledButton
+import com.akimov.wordsfactory.common.components.button.AppFilledButton
 import com.akimov.wordsfactory.common.extensions.checkCondition
 import com.akimov.wordsfactory.common.theme.WordsFactoryTheme
 import com.akimov.wordsfactory.common.theme.heading1
@@ -143,7 +143,7 @@ fun OnBoardingScreen(
             stringResource(R.string.lets_start) else stringResource(R.string.next)
         val coroutineScope = rememberCoroutineScope()
 
-        FilledButton(
+        AppFilledButton(
             modifier = Modifier
                 .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                 .fillMaxWidth(),
