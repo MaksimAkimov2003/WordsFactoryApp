@@ -13,6 +13,7 @@ import com.akimov.wordsfactory.common.components.bottomNavigation.AppBottomBar
 import com.akimov.wordsfactory.screens.dictionary.DictionaryScreen
 import com.akimov.wordsfactory.screens.training.TrainingScreen
 import com.akimov.wordsfactory.screens.video.VideoScreen
+import java.util.UUID
 
 // Bottom nav
 const val DICTIONARY = "DICTIONARY"
@@ -59,7 +60,12 @@ fun BottomNavHost() {
             }
 
             composable(route = TRAINING) {
-                TrainingScreen()
+                TrainingScreen(
+                    navigateToTraining = {
+                        bottomHostNavController.navigate(TRAINING)
+                    },
+                    text = UUID.randomUUID().toString()
+                )
             }
 
             composable(route = VIDEO) {

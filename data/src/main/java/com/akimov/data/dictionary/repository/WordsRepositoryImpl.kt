@@ -3,6 +3,7 @@ package com.akimov.data.dictionary.repository
 import com.akimov.data.dictionary.api.WordsService
 import com.akimov.data.dictionary.database.dao.WordsDao
 import com.akimov.data.dictionary.database.entity.DefinitionEntity
+import com.akimov.data.dictionary.database.entity.KNOWLEDGE_COEFFICIENT_DEFAULT
 import com.akimov.data.dictionary.database.entity.WordEntity
 import com.akimov.data.dictionary.database.pojo.WordWithDefinition
 import com.akimov.data.dictionary.model.WordModel
@@ -39,11 +40,9 @@ class WordsRepositoryImpl(
                 val wordId = UUID.randomUUID()
                 launch {
                     dao.saveWord(word.toEntity(id = wordId))
-                }
-
-                launch {
                     dao.saveMeanings(word.meanings.map { it.toEntity(wordId = wordId) })
                 }
+
             }
         }
     }
@@ -53,7 +52,7 @@ class WordsRepositoryImpl(
         return WordInfoDto(
             word = word.word,
             transcription = word.phonetic ?: word.phonetics.find { it.text != null }?.text,
-            soundUrl = word.phonetics.find { it.audio != null }?.audio,
+            soundUrl = word.phonetics.find { (!it.audio.isNullOrEmpty())  }?.audio,
             partOfSpeech = word.meanings.firstOrNull()?.partOfSpeech,
             meanings = word.meanings.firstOrNull()?.definitions?.map { meaning ->
                 MeaningDto(
@@ -82,7 +81,8 @@ class WordsRepositoryImpl(
         transcription = transcription,
         soundUrl = soundUrl,
         partOfSpeech = partOfSpeech,
-        id = id
+        id = id,
+        knowledgeCoefficient = KNOWLEDGE_COEFFICIENT_DEFAULT
     )
 
     private fun MeaningDto.toEntity(wordId: UUID) = DefinitionEntity(

@@ -13,6 +13,14 @@ val Typography.display1: TextStyle
 
     )
 
+val Typography.paragraphLarge: TextStyle
+    get() = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        color = inkDarkGrey
+    )
+
 val Typography.paragraphMedium: TextStyle
     get() = TextStyle(
         fontFamily = FontFamily.Default,

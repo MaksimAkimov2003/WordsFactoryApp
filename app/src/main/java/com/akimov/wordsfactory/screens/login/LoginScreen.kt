@@ -45,6 +45,8 @@ import androidx.compose.ui.unit.dp
 import com.akimov.wordsfactory.R
 import com.akimov.wordsfactory.common.components.button.AppOutlinedButton
 import com.akimov.wordsfactory.common.components.button.AppFilledButton
+import com.akimov.wordsfactory.common.components.button.AppFilledButtonWithProgressBar
+import com.akimov.wordsfactory.common.components.snackbar.SnackbarResult
 import com.akimov.wordsfactory.common.components.textField.AppTextField
 import com.akimov.wordsfactory.common.extensions.checkCondition
 import com.akimov.wordsfactory.common.theme.WordsFactoryTheme
@@ -97,6 +99,9 @@ private fun RegisterScreenStateless(
         snackbarHost = {
             SnackbarHost(
                 hostState = snackbarHostState,
+                snackbar = {
+                    SnackbarResult(data = it, isSuccess = false)
+                }
             )
         }
     ) {
@@ -184,8 +189,6 @@ private fun SignInButton(
     var buttonHeight: Int by remember {
         mutableIntStateOf(0)
     }
-    val localDensity = LocalDensity.current
-
     when (state) {
         LoginScreenState.Content -> {
             AppFilledButton(
@@ -205,34 +208,15 @@ private fun SignInButton(
         }
 
         LoginScreenState.Loading -> {
-            AppFilledButton(
-                modifier = modifier.then(Modifier
-                    .checkCondition(
-                        condition = { buttonHeight == 0 },
-                        ifTrue = { this.wrapContentHeight() },
-                        ifFalse = {
-                            val height = with(localDensity) {
-                                buttonHeight.toDp()
-                            }
-                            this.height(height)
-                        }
-                    )),
-                content = {
-                    val height = with(localDensity) {
-                        buttonHeight.toDp()
-                    }
-                    Box(modifier = Modifier.size(height)) {
-                        CircularProgressIndicator(
-                            color = MaterialTheme.colorScheme.background
-                        )
-                    }
-                },
+            AppFilledButtonWithProgressBar(
+                modifier = modifier,
                 onClick = {
                     onButtonClick(
                         emailValue,
                         passwordValue
                     )
-                }
+                },
+                buttonHeight = buttonHeight
             )
         }
     }

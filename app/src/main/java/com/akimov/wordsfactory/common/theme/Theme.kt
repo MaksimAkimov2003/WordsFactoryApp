@@ -17,7 +17,8 @@ private val LightColorScheme = lightColorScheme(
     background = Color.White,
     onPrimary = Color.White,
     onBackground = Color(0xFF78746D),
-    tertiary = ink
+    tertiary = ink,
+    error = Color(0xFFbacEF4949)
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
@@ -34,6 +35,9 @@ val ColorScheme.onBackgroundVariant: Color
 
 val ColorScheme.secondaryVariant: Color
     get() = lightGrey
+
+val ColorScheme.success: Color
+    get() = Color(0xFF5BA092)
 
 @Composable
 fun WordsFactoryTheme(

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -52,6 +51,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.akimov.wordsfactory.R
 import com.akimov.wordsfactory.common.components.button.AppFilledButton
+import com.akimov.wordsfactory.common.components.button.AppFilledButtonWithProgressBar
+import com.akimov.wordsfactory.common.components.snackbar.SnackbarResult
 import com.akimov.wordsfactory.common.components.textField.AppTextField
 import com.akimov.wordsfactory.common.extensions.checkCondition
 import com.akimov.wordsfactory.common.theme.WordsFactoryTheme
@@ -102,6 +103,9 @@ private fun RegisterScreenStateless(
         snackbarHost = {
             SnackbarHost(
                 hostState = snackbarHostState,
+                snackbar = {
+                    SnackbarResult(data = it, isSuccess = false)
+                }
             )
         }
     ) {
@@ -189,7 +193,6 @@ private fun BoxScope.SignUpButton(
     var buttonHeight: Int by remember {
         mutableIntStateOf(0)
     }
-    val localDensity = LocalDensity.current
     when (state) {
         RegisterScreenState.Content -> {
             AppFilledButton(
@@ -211,32 +214,12 @@ private fun BoxScope.SignUpButton(
         }
 
         RegisterScreenState.Loading -> {
-            AppFilledButton(
+            AppFilledButtonWithProgressBar(
                 modifier = Modifier
                     .padding(bottom = 24.dp, start = 16.dp, end = 16.dp)
                     .align(Alignment.BottomCenter)
-                    .checkCondition(
-                        condition = { buttonHeight == 0 },
-                        ifTrue = { this.wrapContentHeight() },
-                        ifFalse = {
-                            val height = with(localDensity) {
-                                buttonHeight.toDp()
-                            }
-                            this.height(height)
-                        }
-                    )
                     .fillMaxWidth(),
-                content = {
-                    val height = with(localDensity) {
-                        buttonHeight.toDp()
-                    }
-                    Box(modifier = Modifier.size(height)) {
-                        CircularProgressIndicator(
-                            modifier = Modifier,
-                            color = MaterialTheme.colorScheme.background
-                        )
-                    }
-                },
+                buttonHeight = buttonHeight,
                 onClick = {
                     onButtonClick(
                         emailValue,
