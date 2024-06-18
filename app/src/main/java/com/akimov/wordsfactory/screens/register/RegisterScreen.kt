@@ -3,23 +3,16 @@ package com.akimov.wordsfactory.screens.register
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.scrollBy
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -54,7 +47,6 @@ import com.akimov.wordsfactory.common.components.button.AppFilledButton
 import com.akimov.wordsfactory.common.components.button.AppFilledButtonWithProgressBar
 import com.akimov.wordsfactory.common.components.snackbar.SnackbarResult
 import com.akimov.wordsfactory.common.components.textField.AppTextField
-import com.akimov.wordsfactory.common.extensions.checkCondition
 import com.akimov.wordsfactory.common.theme.WordsFactoryTheme
 import com.akimov.wordsfactory.common.theme.heading1
 import com.akimov.wordsfactory.common.theme.paragraphMedium
@@ -67,7 +59,7 @@ fun RegisterScreen(
 ) {
     val viewModel = koinViewModel<RegisterViewModel>()
 
-    val state by viewModel.state.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(key1 = true) {
@@ -81,12 +73,12 @@ fun RegisterScreen(
     }
 
     RegisterScreenStateless(
-        state = state,
+        isLoading = isLoading,
         onButtonClick = remember(viewModel) {
             { email: String,
               password: String
                 ->
-                viewModel.acceptIntent(RegisterScreenIntent.OnRegisterButtonClick(email, password))
+                viewModel.onRegisterButtonClick(email = email, password = password)
             }
         },
         snackbarHostState = snackbarHostState
@@ -95,7 +87,7 @@ fun RegisterScreen(
 
 @Composable
 private fun RegisterScreenStateless(
-    state: RegisterScreenState,
+    isLoading: Boolean,
     snackbarHostState: SnackbarHostState,
     onButtonClick: (email: String, password: String) -> Unit
 ) {
@@ -169,14 +161,16 @@ private fun RegisterScreenStateless(
                     updatePasswordText = { passwordValue = it }
                 )
 
-                Box(modifier = Modifier.fillMaxHeight()) {
-                    SignUpButton(
-                        state = state,
-                        onButtonClick = onButtonClick,
-                        emailValue = emailValue,
-                        passwordValue = passwordValue
-                    )
-                }
+                SignUpButton(
+                    modifier = Modifier
+                        .padding(bottom = 24.dp, start = 16.dp, end = 16.dp, top = 16.dp)
+                        .fillMaxWidth(),
+                    isLoading = isLoading,
+                    onButtonClick = onButtonClick,
+                    emailValue = emailValue,
+                    passwordValue = passwordValue
+                )
+
             }
         }
 
@@ -184,8 +178,9 @@ private fun RegisterScreenStateless(
 }
 
 @Composable
-private fun BoxScope.SignUpButton(
-    state: RegisterScreenState,
+private fun SignUpButton(
+    modifier: Modifier = Modifier,
+    isLoading: Boolean,
     onButtonClick: (email: String, password: String) -> Unit,
     emailValue: String,
     passwordValue: String,
@@ -193,16 +188,14 @@ private fun BoxScope.SignUpButton(
     var buttonHeight: Int by remember {
         mutableIntStateOf(0)
     }
-    when (state) {
-        RegisterScreenState.Content -> {
+    when (isLoading) {
+        false -> {
             AppFilledButton(
-                modifier = Modifier
-                    .padding(bottom = 24.dp, start = 16.dp, end = 16.dp)
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .onGloballyPositioned {
+                modifier = modifier.then(
+                    Modifier.onGloballyPositioned {
                         buttonHeight = it.size.height
-                    },
+                    }
+                ),
                 getText = { stringResource(id = R.string.sign_up) },
                 onClick = {
                     onButtonClick(
@@ -213,12 +206,9 @@ private fun BoxScope.SignUpButton(
             )
         }
 
-        RegisterScreenState.Loading -> {
+        true -> {
             AppFilledButtonWithProgressBar(
-                modifier = Modifier
-                    .padding(bottom = 24.dp, start = 16.dp, end = 16.dp)
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth(),
+                modifier = modifier,
                 buttonHeight = buttonHeight,
                 onClick = {
                     onButtonClick(
@@ -325,7 +315,7 @@ fun CoolStandingImage(
 fun RegisterScreenPreview() {
     WordsFactoryTheme {
         RegisterScreenStateless(
-            state = RegisterScreenState.Content,
+            isLoading = false,
             snackbarHostState = remember { SnackbarHostState() }) { _, _ ->
         }
     }

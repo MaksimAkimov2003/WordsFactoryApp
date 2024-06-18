@@ -11,7 +11,7 @@ import com.akimov.domain.dictionary.useCase.SearchWordUseCase
 import com.akimov.domain.dictionary.useCase.StartListenAudioUseCase
 import com.akimov.domain.dictionary.useCase.StopListenAudioUseCase
 import com.akimov.wordsfactory.RoomDb
-import com.akimov.wordsfactory.screens.dictionary.viewModel.DictionaryViewModel
+import com.akimov.wordsfactory.screens.dictionary.presentation.DictionaryViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit

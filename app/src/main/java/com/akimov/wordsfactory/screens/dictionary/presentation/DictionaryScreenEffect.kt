@@ -1,4 +1,4 @@
-package com.akimov.wordsfactory.screens.dictionary.viewModel
+package com.akimov.wordsfactory.screens.dictionary.presentation
 
 sealed class DictionaryScreenEffect {
     data class ShowSnackbar(

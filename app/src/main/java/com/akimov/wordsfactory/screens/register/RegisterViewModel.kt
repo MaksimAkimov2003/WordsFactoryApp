@@ -14,47 +14,36 @@ import kotlinx.coroutines.launch
 class RegisterViewModel(
     private val registerUserUseCase: RegisterUserUseCase
 ) : ViewModel() {
-    private val _state: MutableStateFlow<RegisterScreenState> = MutableStateFlow(
-        RegisterScreenState.Content
+    private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(
+        false
     )
-    val state = _state.asStateFlow()
+    val isLoading = _isLoading.asStateFlow()
 
     private val _actions: MutableSharedFlow<RegisterScreenAction> = MutableSharedFlow()
     val actions = _actions.shareIn(viewModelScope, SharingStarted.WhileSubscribed(5000L))
 
-    fun acceptIntent(intent: RegisterScreenIntent) {
+    fun onRegisterButtonClick(email: String, password: String) {
         viewModelScope.launch {
-            when (intent) {
-                is RegisterScreenIntent.OnRegisterButtonClick -> {
-                    _state.update { RegisterScreenState.Loading }
-                    registerUserUseCase(intent.email, intent.password)
-                        .onSuccess {
-                            _actions.emit(RegisterScreenAction.NavigateToMainScreen)
-                        }
-                        .onFailure { error ->
-                            _actions.emit(RegisterScreenAction.ShowSnackBar(error.message ?: "Ошибка регистрации"))
-                        }
-
-                    _state.update { RegisterScreenState.Content }
+            _isLoading.update { true }
+            registerUserUseCase(email, password)
+                .onSuccess {
+                    _actions.emit(RegisterScreenAction.NavigateToMainScreen)
                 }
-            }
+                .onFailure { error ->
+                    _actions.emit(
+                        RegisterScreenAction.ShowSnackBar(
+                            error.message ?: "Ошибка регистрации"
+                        )
+                    )
+                }
+
+            _isLoading.update { false }
         }
     }
+
 }
 
 sealed class RegisterScreenAction {
     data class ShowSnackBar(val message: String) : RegisterScreenAction()
     data object NavigateToMainScreen : RegisterScreenAction()
-}
-
-sealed class RegisterScreenState {
-    data object Loading : RegisterScreenState()
-    data object Content : RegisterScreenState()
-}
-
-sealed class RegisterScreenIntent {
-    data class OnRegisterButtonClick(
-        val email: String,
-        val password: String
-    ) : RegisterScreenIntent()
 }

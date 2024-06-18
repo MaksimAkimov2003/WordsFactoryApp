@@ -1,4 +1,4 @@
-package com.akimov.wordsfactory.screens.dictionary.viewModel
+package com.akimov.wordsfactory.screens.dictionary.presentation
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

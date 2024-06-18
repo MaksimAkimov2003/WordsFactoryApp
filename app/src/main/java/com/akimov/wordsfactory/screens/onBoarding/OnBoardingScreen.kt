@@ -19,6 +19,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -41,7 +42,10 @@ import com.akimov.wordsfactory.common.theme.WordsFactoryTheme
 import com.akimov.wordsfactory.common.theme.heading1
 import com.akimov.wordsfactory.common.theme.paragraphMedium
 import com.akimov.wordsfactory.common.theme.secondaryVariant
+import com.akimov.wordsfactory.screens.onBoarding.presentation.OnBoardingScreenActions
+import com.akimov.wordsfactory.screens.onBoarding.presentation.OnBoardingViewModel
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 private const val PAGE_COUNT = 3
 
@@ -50,7 +54,26 @@ private const val PAGE_COUNT = 3
 fun OnBoardingScreen(
     navigateForward: () -> Unit
 ) {
+    val viewModel = koinViewModel<OnBoardingViewModel>()
     val state = rememberPagerState { PAGE_COUNT }
+
+    LaunchedEffect(key1 = viewModel) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                OnBoardingScreenActions.NavigateNext -> {
+                    if (state.currentPage < PAGE_COUNT - 1) {
+                        state.animateScrollToPage(state.currentPage + 1)
+                    } else {
+                        navigateForward()
+                    }
+                }
+                OnBoardingScreenActions.Skip -> {
+                    navigateForward()
+                }
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp)
@@ -64,7 +87,7 @@ fun OnBoardingScreen(
             getText = {
                 text
             }) {
-            navigateForward()
+            viewModel.onSkipClick()
         }
 
         var maxElementHeight: Int by remember {
@@ -141,7 +164,6 @@ fun OnBoardingScreen(
 
         val stringResource = if (state.currentPage == PAGE_COUNT - 1)
             stringResource(R.string.lets_start) else stringResource(R.string.next)
-        val coroutineScope = rememberCoroutineScope()
 
         AppFilledButton(
             modifier = Modifier
@@ -150,14 +172,7 @@ fun OnBoardingScreen(
             getText = {
                 stringResource
             }) {
-            if (state.currentPage < PAGE_COUNT - 1) {
-                coroutineScope.launch {
-                    state.animateScrollToPage(state.currentPage + 1)
-                }
-            } else {
-                navigateForward()
-            }
-
+            viewModel.onNavigateNextClick()
         }
     }
 

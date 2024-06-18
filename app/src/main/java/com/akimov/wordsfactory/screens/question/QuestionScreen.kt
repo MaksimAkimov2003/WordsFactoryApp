@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -40,10 +41,19 @@ import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun QuestionScreen() {
+fun QuestionScreen(
+    navigateNext: () -> Unit
+) {
     val viewModel = koinViewModel<QuestionViewModel>()
     val state by viewModel.state.collectAsState()
 
+    LaunchedEffect(key1 = viewModel) {
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                is QuestionScreenEffect.NavigateNext -> navigateNext()
+            }
+        }
+    }
     QuestionScreenStateless(
         state = state,
         onVariantClick = remember(viewModel) {

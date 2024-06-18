@@ -8,13 +8,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -33,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -48,7 +43,6 @@ import com.akimov.wordsfactory.common.components.button.AppFilledButton
 import com.akimov.wordsfactory.common.components.button.AppFilledButtonWithProgressBar
 import com.akimov.wordsfactory.common.components.snackbar.SnackbarResult
 import com.akimov.wordsfactory.common.components.textField.AppTextField
-import com.akimov.wordsfactory.common.extensions.checkCondition
 import com.akimov.wordsfactory.common.theme.WordsFactoryTheme
 import com.akimov.wordsfactory.common.theme.heading1
 import com.akimov.wordsfactory.common.theme.paragraphMedium
@@ -61,7 +55,7 @@ fun LoginScreen(
 ) {
     val viewModel = koinViewModel<LoginViewModel>()
 
-    val state by viewModel.state.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(key1 = true) {
@@ -74,13 +68,16 @@ fun LoginScreen(
 
     }
 
-    RegisterScreenStateless(
-        state = state,
+    LoginScreenStateless(
+        isLoading = isLoading,
         onButtonClick = remember(viewModel) {
             { email: String,
               password: String
                 ->
-                viewModel.acceptIntent(LoginScreenIntent.OnLoginButtonClick(email, password))
+                viewModel.onLoginButtonClick(
+                    email = email,
+                    password = password
+                )
             }
         },
         snackbarHostState = snackbarHostState,
@@ -89,8 +86,8 @@ fun LoginScreen(
 }
 
 @Composable
-private fun RegisterScreenStateless(
-    state: LoginScreenState,
+private fun LoginScreenStateless(
+    isLoading: Boolean,
     snackbarHostState: SnackbarHostState,
     onButtonClick: (email: String, password: String) -> Unit,
     navigateToSignUp: () -> Unit
@@ -155,7 +152,7 @@ private fun RegisterScreenStateless(
                     modifier = Modifier.padding(bottom = 24.dp)
                 ) {
                     SignInButton(
-                        state = state,
+                        isLoading = isLoading,
                         onButtonClick = onButtonClick,
                         emailValue = emailValue,
                         passwordValue = passwordValue,
@@ -180,7 +177,7 @@ private fun RegisterScreenStateless(
 
 @Composable
 private fun SignInButton(
-    state: LoginScreenState,
+    isLoading: Boolean,
     onButtonClick: (email: String, password: String) -> Unit,
     emailValue: String,
     passwordValue: String,
@@ -189,8 +186,8 @@ private fun SignInButton(
     var buttonHeight: Int by remember {
         mutableIntStateOf(0)
     }
-    when (state) {
-        LoginScreenState.Content -> {
+    when (isLoading) {
+        false -> {
             AppFilledButton(
                 modifier = modifier.then(
                     Modifier.onGloballyPositioned {
@@ -207,7 +204,7 @@ private fun SignInButton(
             )
         }
 
-        LoginScreenState.Loading -> {
+        true -> {
             AppFilledButtonWithProgressBar(
                 modifier = modifier,
                 onClick = {
@@ -295,8 +292,8 @@ fun CoolStandingImage(
 @Composable
 fun RegisterScreenPreview() {
     WordsFactoryTheme {
-        RegisterScreenStateless(
-            state = LoginScreenState.Content,
+        LoginScreenStateless(
+            isLoading = false,
             snackbarHostState = remember { SnackbarHostState() },
             onButtonClick = { _, _ ->
             },

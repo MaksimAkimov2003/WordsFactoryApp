@@ -1,5 +1,6 @@
 package com.akimov.wordsfactory.common.extensions
 
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.ui.Modifier
 
 /**
