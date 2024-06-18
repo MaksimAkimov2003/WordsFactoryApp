@@ -20,7 +20,7 @@ import java.util.UUID
 
 class WordsRepositoryImpl(
     private val api: WordsService,
-    private val dao: WordsDao
+    private val dao: WordsDao,
 ) : WordsRepository {
     override suspend fun searchWord(query: String): WordInfoDto {
         return try {
@@ -28,7 +28,7 @@ class WordsRepositoryImpl(
         } catch (e: Throwable) {
             withContext(Dispatchers.IO) {
                 dao.searchWordWithDefinition(query)?.toDto() ?: throw Exception(
-                    "Не удалось найти слово в словаре"
+                    "Не удалось найти слово в словаре",
                 )
             }
         }
@@ -42,52 +42,58 @@ class WordsRepositoryImpl(
                     dao.saveWord(word.toEntity(id = wordId))
                     dao.saveMeanings(word.meanings.map { it.toEntity(wordId = wordId) })
                 }
-
             }
         }
     }
+
+    override suspend fun getWordsCount() = dao.getCount()
 
     private fun List<WordModel>.toDto(): WordInfoDto {
         val word: WordModel = first()
         return WordInfoDto(
             word = word.word,
             transcription = word.phonetic ?: word.phonetics.find { it.text != null }?.text,
-            soundUrl = word.phonetics.find { (!it.audio.isNullOrEmpty())  }?.audio,
+            soundUrl = word.phonetics.find { (!it.audio.isNullOrEmpty()) }?.audio,
             partOfSpeech = word.meanings.firstOrNull()?.partOfSpeech,
-            meanings = word.meanings.firstOrNull()?.definitions?.map { meaning ->
-                MeaningDto(
-                    definition = meaning.definition,
-                    example = meaning.example
-                )
-            }?.toImmutableList() ?: persistentListOf()
+            meanings =
+                word.meanings.firstOrNull()?.definitions?.map { meaning ->
+                    MeaningDto(
+                        definition = meaning.definition,
+                        example = meaning.example,
+                    )
+                }?.toImmutableList() ?: persistentListOf(),
         )
     }
 
-    private fun WordWithDefinition.toDto() = WordInfoDto(
-        word = word.word,
-        transcription = word.transcription,
-        soundUrl = word.soundUrl,
-        partOfSpeech = word.partOfSpeech,
-        meanings = definitions.map { meaning ->
-            MeaningDto(
-                definition = meaning.definition,
-                example = meaning.example
-            )
-        }.toImmutableList()
-    )
+    private fun WordWithDefinition.toDto() =
+        WordInfoDto(
+            word = word.word,
+            transcription = word.transcription,
+            soundUrl = word.soundUrl,
+            partOfSpeech = word.partOfSpeech,
+            meanings =
+                definitions.map { meaning ->
+                    MeaningDto(
+                        definition = meaning.definition,
+                        example = meaning.example,
+                    )
+                }.toImmutableList(),
+        )
 
-    private fun WordInfoDto.toEntity(id: UUID) = WordEntity(
-        word = word,
-        transcription = transcription,
-        soundUrl = soundUrl,
-        partOfSpeech = partOfSpeech,
-        id = id,
-        knowledgeCoefficient = KNOWLEDGE_COEFFICIENT_DEFAULT
-    )
+    private fun WordInfoDto.toEntity(id: UUID) =
+        WordEntity(
+            word = word,
+            transcription = transcription,
+            soundUrl = soundUrl,
+            partOfSpeech = partOfSpeech,
+            id = id,
+            knowledgeCoefficient = KNOWLEDGE_COEFFICIENT_DEFAULT,
+        )
 
-    private fun MeaningDto.toEntity(wordId: UUID) = DefinitionEntity(
-        definition = definition,
-        example = example,
-        wordId = wordId
-    )
+    private fun MeaningDto.toEntity(wordId: UUID) =
+        DefinitionEntity(
+            definition = definition,
+            example = example,
+            wordId = wordId,
+        )
 }

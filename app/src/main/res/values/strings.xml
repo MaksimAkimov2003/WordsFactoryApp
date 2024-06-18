@@ -24,4 +24,9 @@
     <string name="part_of_speech">"Part of Speech: "</string>
     <string name="meanings">Meanings:</string>
     <string name="example">Example:</string>
+    <string name="no_words_training">Добавьте слова в словарь</string>
+    <string name="there_are">"There are "</string>
+    <string name="words_in_your_dictionary">" words\nin your Dictionary."</string>
+    <string name="start_the_training">Start the Training?</string>
+    <string name="start">Start</string>
 </resources>

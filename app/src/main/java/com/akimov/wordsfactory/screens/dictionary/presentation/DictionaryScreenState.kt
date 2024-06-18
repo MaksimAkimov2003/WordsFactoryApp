@@ -19,7 +19,6 @@ sealed class ContentState {
     data object NotResults : ContentState()
 }
 
-
 enum class AudioState {
     NotPlaying,
     Playing,

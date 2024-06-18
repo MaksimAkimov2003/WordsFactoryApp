@@ -18,6 +18,9 @@ interface WordsDao {
     @Upsert
     suspend fun saveMeanings(meaning: List<DefinitionEntity>)
 
+    @Query("SELECT COUNT(*) FROM words")
+    suspend fun getCount(): Int
+
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateWord(word: WordEntity)
 

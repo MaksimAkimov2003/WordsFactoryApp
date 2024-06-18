@@ -11,14 +11,15 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val LightColorScheme = lightColorScheme(
-    primary = Color(0XFFE3562A),
-    secondary = Color(0XFF65AAEA),
-    background = Color.White,
-    onPrimary = Color.White,
-    onBackground = Color(0xFF78746D),
-    tertiary = ink,
-    error = Color(0xFFbacEF4949)
+private val LightColorScheme =
+    lightColorScheme(
+        primary = Color(0XFFE3562A),
+        secondary = Color(0XFF65AAEA),
+        background = Color.White,
+        onPrimary = Color.White,
+        onBackground = Color(0xFF78746D),
+        tertiary = ink,
+        error = Color(0xFFbacEF4949),
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
@@ -27,8 +28,8 @@ private val LightColorScheme = lightColorScheme(
     onTertiary = Color.White,
     onBackground = Color(0xFF1C1B1F),
     onSurface = Color(0xFF1C1B1F),
-    */
-)
+     */
+    )
 
 val ColorScheme.onBackgroundVariant: Color
     get() = inkDark
@@ -40,9 +41,7 @@ val ColorScheme.success: Color
     get() = Color(0xFF5BA092)
 
 @Composable
-fun WordsFactoryTheme(
-    content: @Composable () -> Unit
-) {
+fun WordsFactoryTheme(content: @Composable () -> Unit) {
     val colorScheme = LightColorScheme
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -56,6 +55,6 @@ fun WordsFactoryTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        content = content
+        content = content,
     )
 }
