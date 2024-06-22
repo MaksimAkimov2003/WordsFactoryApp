@@ -1,5 +1,6 @@
 package com.akimov.wordsfactory.screens.question
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -27,6 +28,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.akimov.domain.training.model.WordTrainingDto
 import com.akimov.wordsfactory.common.components.progress.AppLinearProgressIndicator
 import com.akimov.wordsfactory.common.extensions.checkCondition
 import com.akimov.wordsfactory.common.theme.WordsFactoryTheme
@@ -39,12 +41,13 @@ import com.akimov.wordsfactory.common.uiModels.VariantUI
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.ParametersHolder
 
 @Composable
 fun QuestionScreen(
+    viewModel: QuestionViewModel,
     navigateNext: () -> Unit
 ) {
-    val viewModel = koinViewModel<QuestionViewModel>()
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(key1 = viewModel) {
@@ -95,6 +98,7 @@ private fun QuestionScreenStateless(
 private fun ProgressIndicator(
     getProgress: () -> Float
 ) {
+    val animatedProgress = animateFloatAsState(targetValue = getProgress())
     Box(
         modifier = Modifier.fillMaxHeight(),
         contentAlignment = Alignment.BottomCenter
@@ -104,7 +108,7 @@ private fun ProgressIndicator(
                 .fillMaxWidth()
                 .padding(bottom = 32.dp)
                 .clip(RoundedCornerShape(100.dp)),
-            progress = getProgress(),
+            progress = animatedProgress.value,
             color = Brush.linearGradient(
                 colors = listOf(
                     Color(0xFFEF4949),

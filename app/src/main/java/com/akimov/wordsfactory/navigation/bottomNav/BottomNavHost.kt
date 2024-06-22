@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.akimov.domain.training.model.WordTrainingDto
 import com.akimov.wordsfactory.common.components.bottomNavigation.AppBottomBar
 import com.akimov.wordsfactory.screens.dictionary.DictionaryScreen
 import com.akimov.wordsfactory.screens.training.TrainingScreen
@@ -20,7 +21,7 @@ const val TRAINING = "TRAINING"
 const val VIDEO = "VIDEO"
 
 @Composable
-fun BottomNavHost() {
+fun BottomNavHost(navigateToQuestion: (List<WordTrainingDto>) -> Unit) {
     val bottomHostNavController = rememberNavController()
 
     val navBackStackEntry by bottomHostNavController.currentBackStackEntryAsState()
@@ -60,9 +61,7 @@ fun BottomNavHost() {
 
             composable(route = TRAINING) {
                 TrainingScreen(
-                    navigateNext = {
-                        bottomHostNavController.navigate(VIDEO)
-                    },
+                    navigateNext = navigateToQuestion,
                 )
             }
 

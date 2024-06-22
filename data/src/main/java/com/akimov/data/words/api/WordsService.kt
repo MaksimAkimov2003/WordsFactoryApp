@@ -1,6 +1,6 @@
-package com.akimov.data.dictionary.api
+package com.akimov.data.words.api
 
-import com.akimov.data.dictionary.model.WordModel
+import com.akimov.data.words.model.WordModel
 import retrofit2.http.GET
 import retrofit2.http.Path
 

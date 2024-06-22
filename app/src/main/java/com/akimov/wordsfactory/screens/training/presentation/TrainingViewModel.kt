@@ -3,7 +3,9 @@ package com.akimov.wordsfactory.screens.training.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akimov.domain.dictionary.useCase.GetWordsInDictionaryCountUseCase
-import com.akimov.domain.training.useCase.ObserveTimerUseCase
+import com.akimov.domain.training.model.WordTrainingDto
+import com.akimov.domain.training.useCase.timer.ObserveTimerUseCase
+import com.akimov.domain.training.useCase.words.GetWordsForTrainingUseCase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +21,7 @@ const val TIMER_DURATION_SECONDS = 5
 
 class TrainingViewModel(
     private val getWordsInDictionaryCountUseCase: GetWordsInDictionaryCountUseCase,
+    private val getWordsForTrainingUseCase: GetWordsForTrainingUseCase,
     observeTimerUseCase: ObserveTimerUseCase,
 ) : ViewModel() {
     private val _state: MutableStateFlow<TrainingScreenState> =
@@ -27,6 +30,8 @@ class TrainingViewModel(
 
     private val _effect = MutableSharedFlow<TrainingScreenEffect>()
     val effect = _effect.shareIn(viewModelScope, SharingStarted.WhileSubscribed(5000L))
+
+    private var wordsForTraining: List<WordTrainingDto>? = null
 
     private val timer =
         observeTimerUseCase(durationInSeconds = TIMER_DURATION_SECONDS)
@@ -42,7 +47,13 @@ class TrainingViewModel(
                 }
                 if (second == 0) {
                     delay(timeMillis = 1000L)
-                    _effect.emit(TrainingScreenEffect.NavigateNext)
+                    _effect.emit(
+                        TrainingScreenEffect.NavigateNext(
+                            wordsForTraining = checkNotNull(wordsForTraining) {
+                                "Words for training are not initialized"
+                            }
+                        )
+                    )
                 }
             }
 
@@ -65,6 +76,9 @@ class TrainingViewModel(
     fun onStartTraining() {
         viewModelScope.launch {
             timer.collect()
+        }
+        viewModelScope.launch {
+            wordsForTraining = getWordsForTrainingUseCase()
         }
     }
 }

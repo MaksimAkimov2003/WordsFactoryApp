@@ -1,4 +1,4 @@
-package com.akimov.data.dictionary.database.entity
+package com.akimov.data.words.database.entity
 
 import androidx.room.Entity
 import androidx.room.ForeignKey

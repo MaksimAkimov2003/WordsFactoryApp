@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.akimov.domain.training.model.WordTrainingDto
 import com.akimov.wordsfactory.R
 import com.akimov.wordsfactory.common.components.button.AppFilledButton
 import com.akimov.wordsfactory.common.extensions.mapToCompose
@@ -47,14 +48,16 @@ import com.akimov.wordsfactory.screens.training.presentation.TrainingViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun TrainingScreen(navigateNext: () -> Unit) {
+fun TrainingScreen(navigateNext: (List<WordTrainingDto>) -> Unit) {
     val viewModel = koinViewModel<TrainingViewModel>()
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(key1 = true) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is TrainingScreenEffect.NavigateNext -> navigateNext()
+                is TrainingScreenEffect.NavigateNext -> navigateNext(
+                    effect.wordsForTraining
+                )
             }
         }
     }
@@ -144,7 +147,7 @@ private fun ColumnScope.StartedState(
         modifier = Modifier.drawBehind {
             val diameter = maxOf(size.width, size.height) + 2 * INNER_PADDING_DP.dp.toPx()
             drawArc(
-                color = color,
+                color = animatedColor.value,
                 startAngle = 270f,
                 sweepAngle = 360f * animatedPercentage.value,
                 useCenter = false,

@@ -1,4 +1,4 @@
-package com.akimov.data.dictionary.mediaPlayer
+package com.akimov.data.words.mediaPlayer
 
 import android.media.AudioAttributes
 import android.media.MediaPlayer

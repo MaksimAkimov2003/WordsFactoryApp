@@ -1,9 +1,9 @@
 package com.akimov.wordsfactory.di
 
-import com.akimov.data.dictionary.api.WordsService
-import com.akimov.data.dictionary.database.dao.WordsDao
-import com.akimov.data.dictionary.mediaPlayer.AppMediaPlayerImpl
-import com.akimov.data.dictionary.repository.WordsRepositoryImpl
+import com.akimov.data.words.api.WordsService
+import com.akimov.data.words.database.dao.WordsDao
+import com.akimov.data.words.mediaPlayer.AppMediaPlayerImpl
+import com.akimov.data.words.repository.WordsRepositoryImpl
 import com.akimov.domain.dictionary.mediaPlayer.AppMediaPlayer
 import com.akimov.domain.dictionary.repository.WordsRepository
 import com.akimov.domain.dictionary.useCase.SaveWordToDictionaryUseCase

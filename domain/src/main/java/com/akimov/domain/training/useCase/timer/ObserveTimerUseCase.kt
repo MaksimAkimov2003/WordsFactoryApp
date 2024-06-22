@@ -1,4 +1,4 @@
-package com.akimov.domain.training.useCase
+package com.akimov.domain.training.useCase.timer
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

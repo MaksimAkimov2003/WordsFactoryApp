@@ -1,4 +1,4 @@
-package com.akimov.data.dictionary.model
+package com.akimov.data.words.model
 
 data class WordModel(
     val word: String,

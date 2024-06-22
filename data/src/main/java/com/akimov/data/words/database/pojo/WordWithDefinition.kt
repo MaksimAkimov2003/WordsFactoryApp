@@ -1,9 +1,9 @@
-package com.akimov.data.dictionary.database.pojo
+package com.akimov.data.words.database.pojo
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.akimov.data.dictionary.database.entity.DefinitionEntity
-import com.akimov.data.dictionary.database.entity.WordEntity
+import com.akimov.data.words.database.entity.DefinitionEntity
+import com.akimov.data.words.database.entity.WordEntity
 
 data class WordWithDefinition(
     @Embedded

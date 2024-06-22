@@ -1,4 +1,4 @@
-package com.akimov.data.dictionary.model
+package com.akimov.data.words.model
 
 data class DefinitionModel(
     val definition: String?,
