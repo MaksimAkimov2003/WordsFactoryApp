@@ -2,14 +2,12 @@ package com.akimov.wordsfactory.common.components.button
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -54,17 +52,19 @@ fun AppFilledButtonWithProgressBar(
 ) {
     val localDensity = LocalDensity.current
     Button(
-        modifier = modifier.then(Modifier
-            .checkCondition(
-                condition = { buttonHeight == 0 },
-                ifTrue = { this.wrapContentHeight() },
-                ifFalse = {
-                    val height = with(localDensity) {
-                        buttonHeight.toDp()
+        modifier = modifier.then(
+            Modifier
+                .checkCondition(
+                    condition = { buttonHeight == 0 },
+                    ifTrue = { this.wrapContentHeight() },
+                    ifFalse = {
+                        val height = with(localDensity) {
+                            buttonHeight.toDp()
+                        }
+                        this.height(height)
                     }
-                    this.height(height)
-                }
-            )),
+                )
+        ),
         shape = RoundedCornerShape(16.dp),
         contentPadding = PaddingValues(vertical = 8.dp),
         enabled = enabled,

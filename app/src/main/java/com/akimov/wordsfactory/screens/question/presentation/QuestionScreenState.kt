@@ -1,4 +1,4 @@
-package com.akimov.wordsfactory.screens.question
+package com.akimov.wordsfactory.screens.question.presentation
 
 import com.akimov.wordsfactory.common.uiModels.VariantUI
 import kotlinx.collections.immutable.ImmutableList

@@ -12,9 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.akimov.domain.training.model.WordTrainingDto
 import com.akimov.wordsfactory.screens.question.QuestionScreen
-import org.koin.androidx.compose.koinViewModel
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 const val PLACEHOLDER_START = "placeholder_start"
@@ -25,7 +23,7 @@ const val QUESTION_SCREEN_ROUTE = "$QUESTION_SCREEN/{$WORD_ARG}"
 @Composable
 fun QuestionsNavHost(
     getCurrentWord: () -> WordTrainingDto,
-    incrementCurrentWord: () -> Unit,
+    sendAnswer: (isCorrect: Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val navController: NavHostController = rememberNavController()
@@ -52,8 +50,8 @@ fun QuestionsNavHost(
             arguments = listOf(navArgument(WORD_ARG) { type = NavType.StringType })
         ) {
             QuestionScreen(
-                navigateNext = {
-                    incrementCurrentWord()
+                navigateNext = { isCorrect ->
+                    sendAnswer(isCorrect)
                     val nextWordJson = Uri.encode(Json.encodeToString(getCurrentWord()))
                     navController.navigate("$QUESTION_SCREEN/$nextWordJson") {
                         popUpTo(navController.graph.id)

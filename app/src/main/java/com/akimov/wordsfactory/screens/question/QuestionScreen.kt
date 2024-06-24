@@ -1,6 +1,11 @@
 package com.akimov.wordsfactory.screens.question
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -28,7 +33,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.akimov.domain.training.model.WordTrainingDto
+import com.akimov.domain.training.useCase.timer.ITERATIONS_PER_SECOND
+import com.akimov.domain.training.useCase.timer.SECOND
 import com.akimov.wordsfactory.common.components.progress.AppLinearProgressIndicator
 import com.akimov.wordsfactory.common.extensions.checkCondition
 import com.akimov.wordsfactory.common.theme.WordsFactoryTheme
@@ -38,14 +44,16 @@ import com.akimov.wordsfactory.common.theme.paragraphLarge
 import com.akimov.wordsfactory.common.theme.success
 import com.akimov.wordsfactory.common.uiModels.HighlightType
 import com.akimov.wordsfactory.common.uiModels.VariantUI
+import com.akimov.wordsfactory.screens.question.presentation.QuestionScreenEffect
+import com.akimov.wordsfactory.screens.question.presentation.QuestionScreenState
+import com.akimov.wordsfactory.screens.question.presentation.QuestionViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
-import org.koin.core.parameter.ParametersHolder
 
 @Composable
 fun QuestionScreen(
-    navigateNext: () -> Unit
+    navigateNext: (isAnswerCorrect: Boolean) -> Unit
 ) {
     val viewModel: QuestionViewModel = koinViewModel()
     val state by viewModel.state.collectAsState()
@@ -53,7 +61,7 @@ fun QuestionScreen(
     LaunchedEffect(key1 = viewModel) {
         viewModel.effects.collect { effect ->
             when (effect) {
-                is QuestionScreenEffect.NavigateNext -> navigateNext()
+                is QuestionScreenEffect.NavigateNext -> navigateNext(effect.isAnswerCorrect)
             }
         }
     }
@@ -63,6 +71,11 @@ fun QuestionScreen(
             { index ->
                 viewModel.onVariantClick(index)
             }
+        },
+        onAnimationFinished = remember(viewModel) {
+            {
+                viewModel.onAnimationFinished()
+            }
         }
     )
 }
@@ -70,7 +83,8 @@ fun QuestionScreen(
 @Composable
 private fun QuestionScreenStateless(
     state: QuestionScreenState,
-    onVariantClick: (index: Int) -> Unit
+    onVariantClick: (index: Int) -> Unit,
+    onAnimationFinished: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -85,7 +99,8 @@ private fun QuestionScreenStateless(
         VariantsList(
             getIsClickEnabled = { state.isSelectVariantEnabled },
             getVariants = { state.variants },
-            onVariantClick = onVariantClick
+            onVariantClick = onVariantClick,
+            onAnimationFinished = onAnimationFinished
         )
 
         ProgressIndicator(
@@ -98,7 +113,14 @@ private fun QuestionScreenStateless(
 private fun ProgressIndicator(
     getProgress: () -> Float
 ) {
-    val animatedProgress = animateFloatAsState(targetValue = getProgress())
+    val animatedProgress = animateFloatAsState(
+        targetValue = getProgress(),
+        animationSpec = tween(
+            durationMillis = (SECOND.toInt() / ITERATIONS_PER_SECOND) + ITERATIONS_PER_SECOND,
+            delayMillis = 0,
+            easing = LinearEasing
+        )
+    )
     Box(
         modifier = Modifier.fillMaxHeight(),
         contentAlignment = Alignment.BottomCenter
@@ -124,7 +146,8 @@ private fun ProgressIndicator(
 private fun VariantsList(
     getVariants: () -> ImmutableList<VariantUI>,
     getIsClickEnabled: () -> Boolean,
-    onVariantClick: (index: Int) -> Unit
+    onVariantClick: (index: Int) -> Unit,
+    onAnimationFinished: () -> Unit,
 ) {
     getVariants().forEachIndexed { index, variant ->
         Spacer(modifier = Modifier.height(16.dp))
@@ -133,6 +156,7 @@ private fun VariantsList(
             getIndex = { index },
             getIsClickEnabled = getIsClickEnabled,
             onVariantClick = onVariantClick,
+            onAnimationFinished = onAnimationFinished,
             modifier = Modifier
                 .fillMaxWidth()
         )
@@ -145,7 +169,8 @@ private fun VariantItem(
     modifier: Modifier = Modifier,
     getIndex: () -> Int,
     getIsClickEnabled: () -> Boolean,
-    onVariantClick: (index: Int) -> Unit
+    onVariantClick: (index: Int) -> Unit,
+    onAnimationFinished: () -> Unit
 ) {
     val (borderColor, borderWidth) =
         when (getVariant().highlightType) {
@@ -153,6 +178,14 @@ private fun VariantItem(
             HighlightType.WRONG -> MaterialTheme.colorScheme.error to 2.dp
             HighlightType.DEFAULT -> MaterialTheme.colorScheme.tertiary to 1.dp
         }
+
+    val animatedColor = animateColorAsState(
+        targetValue = borderColor,
+        animationSpec = spring(stiffness = Spring.StiffnessVeryLow),
+        finishedListener = {
+            onAnimationFinished()
+        }
+    )
 
     val backgroundColor = when (getVariant().highlightType) {
         HighlightType.CORRECT -> MaterialTheme.colorScheme.success.copy(alpha = 0.1f)
@@ -167,7 +200,7 @@ private fun VariantItem(
                 .background(backgroundColor)
                 .border(
                     width = borderWidth,
-                    color = borderColor,
+                    color = animatedColor.value,
                     shape = RoundedCornerShape(8.dp)
                 )
                 .checkCondition(
@@ -238,7 +271,8 @@ private fun QuestionScreenStatelessPreview() {
                 progress = 0.9f,
                 isSelectVariantEnabled = true,
             ),
-            onVariantClick = { }
+            onVariantClick = { },
+            onAnimationFinished = {}
         )
     }
 }

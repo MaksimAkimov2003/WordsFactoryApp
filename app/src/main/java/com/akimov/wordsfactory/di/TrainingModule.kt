@@ -10,9 +10,10 @@ import com.akimov.domain.training.useCase.variants.GetRightVariantIndexUseCase
 import com.akimov.domain.training.useCase.variants.ValidateVariantsUseCase
 import com.akimov.domain.training.useCase.words.GetTittleUseCase
 import com.akimov.domain.training.useCase.words.GetWordsForTrainingUseCase
-import com.akimov.wordsfactory.screens.question.QuestionViewModel
-import com.akimov.wordsfactory.screens.question.wrapper.QuestionsWrapperViewModel
+import com.akimov.wordsfactory.screens.question.presentation.QuestionViewModel
+import com.akimov.wordsfactory.screens.question.wrapper.presentation.QuestionsWrapperViewModel
 import com.akimov.wordsfactory.screens.training.presentation.TrainingViewModel
+import com.akimov.wordsfactory.screens.trainingFinished.presentation.TrainingFinishedViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.factoryOf
@@ -39,4 +40,5 @@ val trainingModule =
                 savedStateHandle = savedStateHandle
             )
         }
+        viewModelOf(::TrainingFinishedViewModel)
     }

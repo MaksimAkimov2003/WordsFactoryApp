@@ -7,7 +7,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.akimov.domain.training.model.WordTrainingDto
 import com.akimov.wordsfactory.common.UiConstants
 import com.akimov.wordsfactory.navigation.bottomNav.BottomNavHost
 import com.akimov.wordsfactory.screens.login.LoginScreen
@@ -15,6 +14,7 @@ import com.akimov.wordsfactory.screens.onBoarding.OnBoardingScreen
 import com.akimov.wordsfactory.screens.question.wrapper.QuestionsWrapperScreen
 import com.akimov.wordsfactory.screens.register.RegisterScreen
 import com.akimov.wordsfactory.screens.splash.SplashScreen
+import com.akimov.wordsfactory.screens.trainingFinished.TrainingFinishedScreen
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -26,6 +26,8 @@ private const val LOGIN = "LOGIN"
 private const val BOTTOM_NAV_HOST = "BOTTOM_NAV_HOST"
 
 private const val QUESTIONS_HOST = "QUESTIONS_HOST"
+
+private const val TRAINING_FINISHED = "TRAINING_FINISHED"
 
 @Composable
 fun AppNavigation() {
@@ -52,9 +54,21 @@ fun AppNavigation() {
         // Questions host
         composable(
             route = "$QUESTIONS_HOST/{${UiConstants.JSON_WORDS_IN_TEST}}",
-            arguments = listOf(navArgument(UiConstants.JSON_WORDS_IN_TEST) { type = NavType.StringType })
+            arguments = listOf(
+                navArgument(UiConstants.JSON_WORDS_IN_TEST) {
+                    type = NavType.StringType
+                }
+            )
         ) {
-            QuestionsWrapperScreen()
+            QuestionsWrapperScreen(
+                onTestFinished = { correct: Int, incorrect: Int ->
+                    navController.navigate("$TRAINING_FINISHED/$correct/$incorrect") {
+                        popUpTo(navController.graph.id)
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            )
         }
 
         composable(route = LAUNCH_SCREEN) {
@@ -98,6 +112,38 @@ fun AppNavigation() {
                 }
             )
         }
+
+        composable(
+            route = "$TRAINING_FINISHED/{${UiConstants.CORRECT}}/{${UiConstants.INCORRECT}}",
+            arguments = listOf(
+                navArgument(UiConstants.CORRECT) { type = NavType.IntType },
+                navArgument(UiConstants.INCORRECT) { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val (correct, incorrect) = with(backStackEntry.arguments) {
+                (
+                        this?.getInt(UiConstants.CORRECT)
+                            ?: 0
+                        ) to (this?.getInt(UiConstants.INCORRECT) ?: 0)
+            }
+
+            TrainingFinishedScreen(
+                correct = correct,
+                incorrect = incorrect,
+                navigateToQuestions = { wordsForTest ->
+                    val jsonWordsForTest = Uri.encode(Json.encodeToString(wordsForTest))
+                    navController.navigate("$QUESTIONS_HOST/$jsonWordsForTest") {
+                        popUpTo(navController.graph.id)
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
+                navigateBack = {
+                    navController.navigate(BOTTOM_NAV_HOST) {
+                        popUpTo(navController.graph.id)
+                    }
+                }
+            )
+        }
     }
 }
-

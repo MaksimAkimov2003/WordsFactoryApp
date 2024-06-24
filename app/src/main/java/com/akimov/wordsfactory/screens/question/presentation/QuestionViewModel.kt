@@ -1,4 +1,4 @@
-package com.akimov.wordsfactory.screens.question
+package com.akimov.wordsfactory.screens.question.presentation
 
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
@@ -50,6 +50,8 @@ class QuestionViewModel(
         (it as Double).toFloat() / SECONDS_AMOUNT
     }
     private val selectedVariantIndex: MutableStateFlow<Int?> = MutableStateFlow(null)
+    private val isAnimationFinished = MutableStateFlow(false)
+
     private val variantsInitial: Deferred<ImmutableList<VariantUI>> =
         viewModelScope.async {
             question.await().variants.mapIndexed { index, variantString ->
@@ -61,15 +63,17 @@ class QuestionViewModel(
             }.toImmutableList()
         }
 
-    val state: StateFlow<QuestionScreenState> =
-        combine(progress, selectedVariantIndex) { progress: Float, selectedIndex: Int? ->
-            if (progress == 0f) viewModelScope.launch { _effects.emit(QuestionScreenEffect.NavigateNext) }
+    private var hasNavigatedNext = false
 
-            QuestionScreenState(
-                question = question.await().tittle,
-                progress = progress,
-                isSelectVariantEnabled = (selectedIndex == null),
-                variants = variantsInitial.await().mapIndexed { index, variantUI ->
+    val state: StateFlow<QuestionScreenState> =
+        combine(
+            progress,
+            selectedVariantIndex,
+            isAnimationFinished,
+        ) { progress: Float, selectedIndex: Int?, isAnimationFinished ->
+
+            val variants: ImmutableList<VariantUI> =
+                variantsInitial.await().mapIndexed { index, variantUI ->
                     if (index == selectedIndex) {
                         variantUI.copy(
                             highlightType = calculateHighlightType(
@@ -80,10 +84,22 @@ class QuestionViewModel(
                         variantUI
                     }
                 }.toImmutableList()
+
+            if ((progress == 0f) || (isAnimationFinished)) {
+                val isAnswerCorrect =
+                    variants.any { variantUI -> variantUI.highlightType == HighlightType.CORRECT }
+                sendNavigateNextEffect(isAnswerCorrect)
+            }
+
+            QuestionScreenState(
+                question = question.await().tittle,
+                progress = progress,
+                isSelectVariantEnabled = (selectedIndex == null),
+                variants = variants
             )
         }.stateIn(
             viewModelScope,
-            SharingStarted.WhileSubscribed(5000L),
+            SharingStarted.WhileSubscribed(),
             QuestionScreenState(
                 question = "",
                 progress = 0f,
@@ -91,6 +107,14 @@ class QuestionViewModel(
                 variants = persistentListOf()
             )
         )
+
+    private fun sendNavigateNextEffect(isAnswerCorrect: Boolean) {
+        if (hasNavigatedNext) return
+        viewModelScope.launch {
+            hasNavigatedNext = true
+            _effects.emit(QuestionScreenEffect.NavigateNext(isAnswerCorrect = isAnswerCorrect))
+        }
+    }
 
     private val _effects = MutableSharedFlow<QuestionScreenEffect>()
     val effects = _effects.asSharedFlow()
@@ -101,6 +125,10 @@ class QuestionViewModel(
 
     fun onVariantClick(index: Int) {
         selectedVariantIndex.update { index }
+    }
+
+    fun onAnimationFinished() {
+        isAnimationFinished.update { true }
     }
 
     private suspend fun calculateHighlightType(selectedIndex: Int) =
