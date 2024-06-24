@@ -45,9 +45,9 @@ import org.koin.core.parameter.ParametersHolder
 
 @Composable
 fun QuestionScreen(
-    viewModel: QuestionViewModel,
     navigateNext: () -> Unit
 ) {
+    val viewModel: QuestionViewModel = koinViewModel()
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(key1 = viewModel) {

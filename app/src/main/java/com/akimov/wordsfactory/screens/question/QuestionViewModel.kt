@@ -1,6 +1,7 @@
 package com.akimov.wordsfactory.screens.question
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akimov.domain.training.interactor.GetQuestionForWordInteractor
@@ -9,6 +10,7 @@ import com.akimov.domain.training.useCase.timer.ObserveTimerUseCase
 import com.akimov.wordsfactory.common.extensions.indexToLetter
 import com.akimov.wordsfactory.common.uiModels.HighlightType
 import com.akimov.wordsfactory.common.uiModels.VariantUI
+import com.akimov.wordsfactory.navigation.question.WORD_ARG
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -25,20 +27,27 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 
 private const val SECONDS_AMOUNT = 5
 
 class QuestionViewModel(
     observeTimerUseCase: ObserveTimerUseCase,
     getQuestionForWordInteractor: GetQuestionForWordInteractor,
-    word: WordTrainingDto,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+    private val word: WordTrainingDto =
+        Json.decodeFromString(checkNotNull(savedStateHandle.get<String>(WORD_ARG)) { "Word must be passed" })
     private val question = viewModelScope.async {
         getQuestionForWordInteractor(word = word)
     }
 
-    private val progress: Flow<Float> = observeTimerUseCase(SECONDS_AMOUNT + 1).map {
-        it.toFloat() / SECONDS_AMOUNT
+    private val progress: Flow<Float> = observeTimerUseCase(
+        durationInSeconds = SECONDS_AMOUNT + 1,
+        withMillis = true
+    ).map {
+        (it as Double).toFloat() / SECONDS_AMOUNT
     }
     private val selectedVariantIndex: MutableStateFlow<Int?> = MutableStateFlow(null)
     private val variantsInitial: Deferred<ImmutableList<VariantUI>> =
@@ -87,7 +96,7 @@ class QuestionViewModel(
     val effects = _effects.asSharedFlow()
 
     init {
-        Log.d("QuestionViewModel", "${word.name}")
+        Log.d("QuestionViewModel", word.name)
     }
 
     fun onVariantClick(index: Int) {

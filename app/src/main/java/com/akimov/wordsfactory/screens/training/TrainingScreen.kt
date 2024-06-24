@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,7 +49,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun TrainingScreen(navigateNext: (List<WordTrainingDto>) -> Unit) {
     val viewModel = koinViewModel<TrainingViewModel>()
-    val state by viewModel.state.collectAsState()
+    val state = viewModel.state.collectAsState()
 
     LaunchedEffect(key1 = true) {
         viewModel.effect.collect { effect ->
@@ -63,7 +62,7 @@ fun TrainingScreen(navigateNext: (List<WordTrainingDto>) -> Unit) {
     }
 
     TrainingScreenStateless(
-        state = state,
+        getState = { state.value },
         onStartTrainingClicked = remember(viewModel) {
             {
                 viewModel.onStartTraining()
@@ -74,15 +73,15 @@ fun TrainingScreen(navigateNext: (List<WordTrainingDto>) -> Unit) {
 
 @Composable
 fun TrainingScreenStateless(
-    state: TrainingScreenState,
+    getState: () -> TrainingScreenState,
     onStartTrainingClicked: () -> Unit
 ) {
-    when (state) {
+    when (val state = getState()) {
         TrainingScreenState.NoWords -> NoWordsState()
         is TrainingScreenState.EnoughWords ->
             EnoughWordsState(
-                state.wordsCount,
-                state.trainingState,
+                wordsCount = state.wordsCount,
+                getTrainingState = { state.trainingState },
                 onStartTrainingClicked = onStartTrainingClicked,
             )
     }
@@ -91,7 +90,7 @@ fun TrainingScreenStateless(
 @Composable
 private fun EnoughWordsState(
     wordsCount: Int,
-    trainingState: TrainingState,
+    getTrainingState: () -> TrainingState,
     onStartTrainingClicked: () -> Unit,
 ) {
     Box(
@@ -115,15 +114,15 @@ private fun EnoughWordsState(
                 style = MaterialTheme.typography.heading1,
                 textAlign = TextAlign.Center,
             )
-            when (trainingState) {
+            when (val state = getTrainingState()) {
                 TrainingState.NotStarted ->
                     NotStartedState(onStartTrainingClicked)
 
                 is TrainingState.Started ->
                     StartedState(
-                        number = trainingState.convertSecondsToText(),
-                        color = trainingState.color.mapToCompose(),
-                        percentage = trainingState.percentage,
+                        getNumber = { state.convertSecondsToText() },
+                        getColor = { state.color.mapToCompose() },
+                        getPercentage = { state.percentage },
                     )
             }
         }
@@ -135,14 +134,14 @@ private const val STROKE_WIDTH_DP = 8
 
 @Composable
 private fun ColumnScope.StartedState(
-    number: String,
-    color: Color,
-    percentage: Float,
+    getNumber: () -> String,
+    getColor: @Composable () -> Color,
+    getPercentage: () -> Float,
 ) {
     Spacer(modifier = Modifier.weight(0.5f))
 
-    val animatedPercentage = animateFloatAsState(targetValue = percentage)
-    val animatedColor = animateColorAsState(targetValue = color)
+    val animatedPercentage = animateFloatAsState(targetValue = getPercentage())
+    val animatedColor = animateColorAsState(targetValue = getColor())
     Text(
         modifier = Modifier.drawBehind {
             val diameter = maxOf(size.width, size.height) + 2 * INNER_PADDING_DP.dp.toPx()
@@ -159,8 +158,8 @@ private fun ColumnScope.StartedState(
                 size = Size(diameter, diameter)
             )
         },
-        text = number,
-        color = color,
+        text = getNumber(),
+        color = getColor(),
         style = MaterialTheme.typography.extraLarge.copy(
             platformStyle = PlatformTextStyle(
                 includeFontPadding = false
@@ -225,7 +224,7 @@ private fun NoWordsState() {
 private fun NoWordsPreview() {
     WordsFactoryTheme {
         TrainingScreenStateless(
-            state = TrainingScreenState.NoWords,
+            getState = { TrainingScreenState.NoWords },
             onStartTrainingClicked = {},
         )
     }
@@ -236,11 +235,13 @@ private fun NoWordsPreview() {
 private fun TrainingAvailablePreview() {
     WordsFactoryTheme {
         TrainingScreenStateless(
-            state =
-            TrainingScreenState.EnoughWords(
-                wordsCount = 10,
-                trainingState = TrainingState.NotStarted,
-            ),
+            getState =
+            {
+                TrainingScreenState.EnoughWords(
+                    wordsCount = 10,
+                    trainingState = TrainingState.NotStarted,
+                )
+            },
             onStartTrainingClicked = {},
         )
     }
@@ -251,14 +252,16 @@ private fun TrainingAvailablePreview() {
 private fun StartedTrainingPreview() {
     WordsFactoryTheme {
         TrainingScreenStateless(
-            state =
-            TrainingScreenState.EnoughWords(
-                wordsCount = 10,
-                trainingState =
-                TrainingState.Started(
-                    secondsToStart = 3,
-                ),
-            ),
+            getState =
+            {
+                TrainingScreenState.EnoughWords(
+                    wordsCount = 10,
+                    trainingState =
+                    TrainingState.Started(
+                        secondsToStart = 3,
+                    ),
+                )
+            },
             onStartTrainingClicked = {},
         )
     }

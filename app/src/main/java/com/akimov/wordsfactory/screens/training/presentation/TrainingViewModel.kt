@@ -41,7 +41,7 @@ class TrainingViewModel(
                         wordsCount = (currentState as TrainingScreenState.EnoughWords).wordsCount,
                         trainingState =
                         TrainingState.Started(
-                            secondsToStart = second,
+                            secondsToStart = second as Int,
                         ),
                     )
                 }
