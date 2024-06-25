@@ -2,20 +2,14 @@ package com.akimov.data.words.repository
 
 import com.akimov.data.words.api.WordsService
 import com.akimov.data.words.database.dao.WordsDao
-import com.akimov.data.words.database.entity.DefinitionEntity
-import com.akimov.data.words.database.entity.KNOWLEDGE_COEFFICIENT_DEFAULT
-import com.akimov.data.words.database.entity.WordEntity
 import com.akimov.data.words.database.pojo.WordWithDefinition
 import com.akimov.data.words.mapper.toDto
 import com.akimov.data.words.mapper.toEntity
 import com.akimov.data.words.mapper.toTraining
-import com.akimov.data.words.model.WordModel
-import com.akimov.domain.dictionary.model.MeaningDto
-import com.akimov.domain.dictionary.model.WordInfoDto
+import com.akimov.domain.dictionary.model.WordWithMeaningsDto
 import com.akimov.domain.dictionary.repository.WordsRepository
+import com.akimov.domain.training.model.WordInfoDto
 import com.akimov.domain.training.model.WordTrainingDto
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -26,7 +20,14 @@ class WordsRepositoryImpl(
     private val api: WordsService,
     private val dao: WordsDao,
 ) : WordsRepository {
-    override suspend fun searchWord(query: String): WordInfoDto {
+    companion object {
+        val MOCKED_VARIANTS = listOf(
+            "Smiling",
+            "Freezing"
+        )
+    }
+
+    override suspend fun searchWord(query: String): WordWithMeaningsDto {
         return try {
             api.searchWord(query).toDto()
         } catch (e: Throwable) {
@@ -38,7 +39,7 @@ class WordsRepositoryImpl(
         }
     }
 
-    override suspend fun saveWordToDictionary(word: WordInfoDto) {
+    override suspend fun saveWordToDictionary(word: WordWithMeaningsDto) {
         withContext(Dispatchers.IO) {
             coroutineScope {
                 val wordId = UUID.randomUUID()
@@ -50,7 +51,13 @@ class WordsRepositoryImpl(
         }
     }
 
+    override suspend fun getWordById(wordId: String) = withContext(Dispatchers.IO) {
+        val wordFromDatabase = dao.getWordById(wordId = UUID.fromString(wordId))
+        return@withContext wordFromDatabase.toDto()
+    }
+
     override suspend fun getWordsCount() = dao.getCount()
+    override suspend fun getWordsCount(name: String) = dao.getCount(name)
 
     override suspend fun getSortedByCoefficientWords(limit: Int): List<WordTrainingDto> =
         withContext(Dispatchers.IO) {
@@ -69,8 +76,10 @@ class WordsRepositoryImpl(
             entity.word
         }
 
-    override fun getMockedVariants() = listOf(
-        "Smiling",
-        "Freezing"
-    )
+    override fun getMockedVariants(): List<String> =
+        MOCKED_VARIANTS
+
+    override suspend fun updateWord(new: WordInfoDto) = withContext(Dispatchers.IO) {
+        dao.updateWord(new.toEntity())
+    }
 }

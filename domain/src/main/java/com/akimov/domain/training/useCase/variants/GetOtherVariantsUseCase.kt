@@ -5,8 +5,8 @@ import com.akimov.domain.dictionary.repository.WordsRepository
 class GetOtherVariantsUseCase(
     private val repository: WordsRepository
 ) {
-    private companion object {
-        private const val OTHER_VARIANTS_COUNT = 2
+    companion object {
+        const val OTHER_VARIANTS_COUNT = 2
     }
 
     suspend operator fun invoke(rightVariantName: String): List<String> =

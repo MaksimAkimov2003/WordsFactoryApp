@@ -66,9 +66,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.akimov.domain.dictionary.model.MeaningDto
-import com.akimov.domain.dictionary.model.WordInfoDto
+import com.akimov.domain.dictionary.model.WordWithMeaningsDto
 import com.akimov.wordsfactory.R
-import com.akimov.wordsfactory.common.uiModels.SnackbarStateWrapper
 import com.akimov.wordsfactory.common.components.button.AppFilledButton
 import com.akimov.wordsfactory.common.components.button.AppFilledButtonWithProgressBar
 import com.akimov.wordsfactory.common.components.snackbar.SnackbarResult
@@ -78,6 +77,7 @@ import com.akimov.wordsfactory.common.extensions.replaceSlashesWithBrackets
 import com.akimov.wordsfactory.common.theme.WordsFactoryTheme
 import com.akimov.wordsfactory.common.theme.heading1
 import com.akimov.wordsfactory.common.theme.paragraphMedium
+import com.akimov.wordsfactory.common.uiModels.SnackbarStateWrapper
 import com.akimov.wordsfactory.screens.dictionary.presentation.AudioState
 import com.akimov.wordsfactory.screens.dictionary.presentation.ContentState
 import com.akimov.wordsfactory.screens.dictionary.presentation.DictionaryScreenEffect
@@ -151,7 +151,7 @@ fun DictionaryScreen() {
 private fun DictionaryScreenStateless(
     state: DictionaryScreenState,
     getSnackbarStateWrapper: () -> SnackbarStateWrapper,
-    onAddToDictionaryClicked: (word: WordInfoDto) -> Unit,
+    onAddToDictionaryClicked: (word: WordWithMeaningsDto) -> Unit,
     onSearchClick: (word: String) -> Unit,
     onStartAudioIconClicked: (soundUrl: String) -> Unit,
     onStopAudioIconClicked: () -> Unit,
@@ -240,7 +240,7 @@ private fun DictionaryScreenStateless(
 @Composable
 private fun AddToDictionaryButton(
     contentState: ContentState.Content,
-    onAddToDictionaryClicked: (word: WordInfoDto) -> Unit
+    onAddToDictionaryClicked: (word: WordWithMeaningsDto) -> Unit
 ) {
     var buttonHeight: Int by remember {
         mutableIntStateOf(0)
@@ -262,7 +262,9 @@ private fun AddToDictionaryButton(
             })
     } else {
         AppFilledButtonWithProgressBar(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp),
             buttonHeight = buttonHeight,
             enabled = false
         ) {}
@@ -288,7 +290,7 @@ private fun DictionaryScreenStatelessPreview() {
             state = DictionaryScreenState(
                 query = "Cooking",
                 contentState = ContentState.Content(
-                    wordInfo = WordInfoDto(
+                    wordInfo = WordWithMeaningsDto(
                         word = "Cooking",
                         meanings = meanings.toImmutableList(),
                         soundUrl = "https://www.sound.com",
@@ -373,7 +375,7 @@ private fun DictionaryNoInputStatePreview() {
 
 @Composable
 private fun DictionaryContentState(
-    getWordInfo: () -> WordInfoDto,
+    getWordInfo: () -> WordWithMeaningsDto,
     getPaddingValues: () -> PaddingValues,
     getAudioState: () -> AudioState,
     changeButtonVisibility: (visible: Boolean) -> Unit,
@@ -581,7 +583,7 @@ private fun DictionaryContentStatePreview() {
     WordsFactoryTheme {
         DictionaryContentState(
             getWordInfo = {
-                WordInfoDto(
+                WordWithMeaningsDto(
                     word = "Cooking",
                     meanings = persistentListOf(
                         MeaningDto(

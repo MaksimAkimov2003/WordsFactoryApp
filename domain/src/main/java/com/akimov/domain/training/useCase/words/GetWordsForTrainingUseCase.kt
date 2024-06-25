@@ -5,7 +5,7 @@ import com.akimov.domain.dictionary.repository.WordsRepository
 class GetWordsForTrainingUseCase(
     private val wordsRepository: WordsRepository
 ) {
-    private companion object {
+    companion object {
         const val MAX_WORDS_COUNT = 10
     }
 

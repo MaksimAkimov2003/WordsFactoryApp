@@ -1,6 +1,6 @@
 package com.akimov.wordsfactory.screens.dictionary.presentation
 
-import com.akimov.domain.dictionary.model.WordInfoDto
+import com.akimov.domain.dictionary.model.WordWithMeaningsDto
 
 data class DictionaryScreenState(
     val query: String,
@@ -11,7 +11,7 @@ sealed class ContentState {
     data object NotInput : ContentState()
     data object Loading : ContentState()
     data class Content(
-        val wordInfo: WordInfoDto,
+        val wordInfo: WordWithMeaningsDto,
         val audioState: AudioState,
         val wordSavingState: WordSavingState
     ) : ContentState()

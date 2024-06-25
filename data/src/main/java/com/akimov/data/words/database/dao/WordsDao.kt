@@ -1,7 +1,6 @@
 package com.akimov.data.words.database.dao
 
 import androidx.room.Dao
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
@@ -9,6 +8,7 @@ import androidx.room.Upsert
 import com.akimov.data.words.database.entity.DefinitionEntity
 import com.akimov.data.words.database.entity.WordEntity
 import com.akimov.data.words.database.pojo.WordWithDefinition
+import java.util.UUID
 
 @Dao
 interface WordsDao {
@@ -20,6 +20,12 @@ interface WordsDao {
 
     @Query("SELECT COUNT(*) FROM words")
     suspend fun getCount(): Int
+
+    @Query("SELECT COUNT(*) FROM words WHERE word = :word")
+    suspend fun getCount(word: String): Int
+
+    @Query("SELECT * FROM words WHERE id = :wordId")
+    suspend fun getWordById(wordId: UUID): WordEntity
 
     @Transaction
     @Query("SELECT * FROM words WHERE word = :word")
@@ -34,4 +40,7 @@ interface WordsDao {
         excludedName: String,
         limit: Int
     ): List<WordEntity>
+
+    @Update(entity = WordEntity::class)
+    suspend fun updateWord(word: WordEntity)
 }

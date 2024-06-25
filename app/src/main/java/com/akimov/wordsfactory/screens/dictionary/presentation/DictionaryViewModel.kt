@@ -3,7 +3,7 @@ package com.akimov.wordsfactory.screens.dictionary.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.akimov.domain.dictionary.model.WordInfoDto
+import com.akimov.domain.dictionary.model.WordWithMeaningsDto
 import com.akimov.domain.dictionary.useCase.SaveWordToDictionaryUseCase
 import com.akimov.domain.dictionary.useCase.SearchWordUseCase
 import com.akimov.domain.dictionary.useCase.StartListenAudioUseCase
@@ -34,7 +34,7 @@ class DictionaryViewModel(
     private val _effects = MutableSharedFlow<DictionaryScreenEffect>()
     val effects = _effects.shareIn(viewModelScope, SharingStarted.WhileSubscribed(5000L))
 
-    fun onAddToDictionaryClicked(word: WordInfoDto) {
+    fun onAddToDictionaryClicked(word: WordWithMeaningsDto) {
         viewModelScope.launch {
             _state.update { screenState ->
                 val contentState = screenState.contentState as? ContentState.Content
@@ -59,10 +59,10 @@ class DictionaryViewModel(
                 )
             }
 
-            wordSavingResult.onFailure {
+            wordSavingResult.onFailure { error ->
                 _effects.emit(
                     DictionaryScreenEffect.ShowSnackbar(
-                        message = "Failed to save word to dictionary",
+                        message = error.message ?: "Failed to save word to dictionary",
                         isSuccess = false
                     )
                 )

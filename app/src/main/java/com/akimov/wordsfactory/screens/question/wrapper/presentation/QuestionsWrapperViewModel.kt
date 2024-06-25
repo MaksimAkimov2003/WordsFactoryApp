@@ -3,6 +3,7 @@ package com.akimov.wordsfactory.screens.question.wrapper.presentation
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.akimov.domain.training.interactor.UpdateWordLearningProgressInteractor
 import com.akimov.domain.training.model.WordTrainingDto
 import com.akimov.wordsfactory.common.UiConstants
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,7 +17,8 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 class QuestionsWrapperViewModel(
-    savedStateHandle: SavedStateHandle
+    private val updateWordLearningProgressInteractor: UpdateWordLearningProgressInteractor,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val jsonWordsInTest: String = savedStateHandle[UiConstants.JSON_WORDS_IN_TEST]
         ?: error("Words are not provided")
@@ -37,6 +39,11 @@ class QuestionsWrapperViewModel(
     private var incorrectCount: Int = 0
 
     fun retrieveAnswer(isCorrect: Boolean) {
+        updateWordLearningProgressInteractor(
+            wordId = _currentWord.value.id,
+            isAnswerCorrect = isCorrect
+        )
+
         if (isCorrect) {
             correctCount++
         } else {
