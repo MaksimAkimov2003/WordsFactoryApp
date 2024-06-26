@@ -6,6 +6,7 @@ import com.akimov.wordsfactory.di.dictionaryModule
 import com.akimov.wordsfactory.di.ioModule
 import com.akimov.wordsfactory.di.onBoardingModule
 import com.akimov.wordsfactory.di.trainingModule
+import com.akimov.wordsfactory.di.videoModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -23,6 +24,7 @@ class App : Application() {
                 ioModule,
                 onBoardingModule,
                 trainingModule,
+                videoModule
             )
         }
     }

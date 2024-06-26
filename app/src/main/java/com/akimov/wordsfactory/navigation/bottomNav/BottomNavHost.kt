@@ -21,7 +21,10 @@ const val TRAINING = "TRAINING"
 const val VIDEO = "VIDEO"
 
 @Composable
-fun BottomNavHost(navigateToQuestion: (List<WordTrainingDto>) -> Unit) {
+fun BottomNavHost(
+    navigateToQuestion: (List<WordTrainingDto>) -> Unit,
+    navigateToPlayer: () -> Unit
+) {
     val bottomHostNavController = rememberNavController()
 
     val navBackStackEntry by bottomHostNavController.currentBackStackEntryAsState()
@@ -39,12 +42,19 @@ fun BottomNavHost(navigateToQuestion: (List<WordTrainingDto>) -> Unit) {
                 changeSelectedItem = { navItem ->
                     bottomHostNavController.navigate(navItem.route) {
                         if (navItem == NavBarItem.DICTIONARY) {
-                            popUpTo(bottomHostNavController.graph.id)
+                            popUpTo(bottomHostNavController.graph.id) {
+                                saveState = true
+                                inclusive = true
+                            }
                         } else {
                             popUpTo(navItem.route) {
+                                saveState = true
                                 inclusive = true
                             }
                         }
+
+                        launchSingleTop = true
+                        restoreState = true
                     }
                 }
             )
@@ -66,7 +76,12 @@ fun BottomNavHost(navigateToQuestion: (List<WordTrainingDto>) -> Unit) {
             }
 
             composable(route = VIDEO) {
-                VideoScreen()
+                VideoScreen(
+                    navigateBack = {
+                        bottomHostNavController.popBackStack()
+                    },
+                    navigateToPlayer = navigateToPlayer
+                )
             }
         }
     }

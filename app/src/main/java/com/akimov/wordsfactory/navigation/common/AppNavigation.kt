@@ -15,6 +15,8 @@ import com.akimov.wordsfactory.screens.question.wrapper.QuestionsWrapperScreen
 import com.akimov.wordsfactory.screens.register.RegisterScreen
 import com.akimov.wordsfactory.screens.splash.SplashScreen
 import com.akimov.wordsfactory.screens.trainingFinished.TrainingFinishedScreen
+import com.akimov.wordsfactory.screens.video.VideoViewHolder
+import com.akimov.wordsfactory.screens.video.player.VideoPlayerScreen
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -28,6 +30,8 @@ private const val BOTTOM_NAV_HOST = "BOTTOM_NAV_HOST"
 private const val QUESTIONS_HOST = "QUESTIONS_HOST"
 
 private const val TRAINING_FINISHED = "TRAINING_FINISHED"
+
+private const val VIDEO_PLAYER = "VIDEO_PLAYER"
 
 @Composable
 fun AppNavigation() {
@@ -46,6 +50,16 @@ fun AppNavigation() {
                         popUpTo(navController.graph.id)
                         launchSingleTop = true
                         restoreState = true
+                    }
+                },
+                navigateToPlayer = {
+                    navController.navigate(route = VIDEO_PLAYER) {
+//                        popUpTo(route = BOTTOM_NAV_HOST) {
+//                            saveState = true
+//                        }
+//
+//                        launchSingleTop = true
+//                        restoreState = true
                     }
                 }
             )
@@ -143,6 +157,12 @@ fun AppNavigation() {
                         popUpTo(navController.graph.id)
                     }
                 }
+            )
+        }
+
+        composable(route = VIDEO_PLAYER) {
+            VideoPlayerScreen(
+                videoView = VideoViewHolder.getVideoView(),
             )
         }
     }
