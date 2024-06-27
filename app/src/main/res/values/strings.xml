@@ -36,4 +36,5 @@
     <string name="my_dictionary">My Dictionary</string>
     <string name="words">Words</string>
     <string name="remembered_words">I already remember</string>
+    <string name="i_already_remember">I already remember</string>
 </resources>

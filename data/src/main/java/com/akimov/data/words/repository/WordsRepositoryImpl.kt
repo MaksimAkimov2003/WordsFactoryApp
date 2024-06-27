@@ -12,6 +12,7 @@ import com.akimov.domain.training.model.WordInfoDto
 import com.akimov.domain.training.model.WordTrainingDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
@@ -58,9 +59,13 @@ class WordsRepositoryImpl(
 
     override suspend fun getWordsCount() = dao.getCount()
     override suspend fun getWordsCount(name: String) = dao.getCount(name)
-    override fun getWordsCountFlow() = dao.getCountFlow()
+    override fun getWordsCountFlow(): Flow<Int> {
+        return dao.getCountFlow()
+    }
 
-    override fun getStudiedWordsCountFlow() = dao.getStudiedWordsCountFlow()
+    override fun getStudiedWordsCountFlow(): Flow<Int> {
+        return dao.getStudiedWordsCountFlow()
+    }
 
     override suspend fun getSortedByCoefficientWords(limit: Int): List<WordTrainingDto> =
         withContext(Dispatchers.IO) {

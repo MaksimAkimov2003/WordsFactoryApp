@@ -6,6 +6,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.glance.unit.ColorProvider
 
 val Typography.extraLarge: TextStyle
     get() = TextStyle(
@@ -69,4 +70,20 @@ val Typography.buttonSmall: TextStyle
         fontSize = 14.sp,
         color = inkDarkGrey
     )
+
+val GlanceH5 = androidx.glance.text.TextStyle(
+    fontWeight = androidx.glance.text.FontWeight.Bold,
+    fontSize = 32.sp,
+    color = ColorProvider(Color.White)
+)
+val GlanceH3 = androidx.glance.text.TextStyle(
+    fontWeight = androidx.glance.text.FontWeight.Medium,
+    fontSize = 20.sp,
+    color = ColorProvider(Color.Black)
+)
+val GlanceParagraphMedium = androidx.glance.text.TextStyle(
+    fontWeight = androidx.glance.text.FontWeight.Normal,
+    fontSize = 14.sp,
+    color = ColorProvider(inkDarkGrey)
+)
 

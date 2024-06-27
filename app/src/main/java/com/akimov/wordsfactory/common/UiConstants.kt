@@ -11,4 +11,6 @@ object UiConstants {
     const val HOST = "https://learnenglish.britishcouncil.org"
     const val URL = "$HOST/general-english/video-zone"
     // endregion
+
+    const val WIDGET_UPDATE_INTERVAL_SECONDS = 15L
 }
