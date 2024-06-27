@@ -11,9 +11,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.akimov.domain.training.model.WordTrainingDto
 import com.akimov.wordsfactory.common.components.bottomNavigation.AppBottomBar
-import com.akimov.wordsfactory.screens.dictionary.DictionaryScreen
-import com.akimov.wordsfactory.screens.training.TrainingScreen
-import com.akimov.wordsfactory.screens.video.VideoScreen
+import com.akimov.wordsfactory.feature.dictionary.DictionaryScreen
+import com.akimov.wordsfactory.feature.training.TrainingScreen
+import com.akimov.wordsfactory.feature.video.VideoScreen
 
 // Bottom nav
 const val DICTIONARY = "DICTIONARY"

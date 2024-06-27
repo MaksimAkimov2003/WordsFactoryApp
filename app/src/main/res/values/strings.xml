@@ -33,4 +33,7 @@
     <string name="correct">Correct:</string>
     <string name="incorrect">Incorrect:</string>
     <string name="again">Again</string>
+    <string name="my_dictionary">My Dictionary</string>
+    <string name="words">Words</string>
+    <string name="remembered_words">I already remember</string>
 </resources>

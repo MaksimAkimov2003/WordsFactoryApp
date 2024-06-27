@@ -14,10 +14,10 @@ import com.akimov.domain.training.useCase.words.GetTittleUseCase
 import com.akimov.domain.training.useCase.words.GetWordByIdUseCase
 import com.akimov.domain.training.useCase.words.GetWordsForTrainingUseCase
 import com.akimov.domain.training.useCase.words.UpdateWordCoefficientUseCase
-import com.akimov.wordsfactory.screens.question.presentation.QuestionViewModel
-import com.akimov.wordsfactory.screens.question.wrapper.presentation.QuestionsWrapperViewModel
-import com.akimov.wordsfactory.screens.training.presentation.TrainingViewModel
-import com.akimov.wordsfactory.screens.trainingFinished.presentation.TrainingFinishedViewModel
+import com.akimov.wordsfactory.feature.question.presentation.QuestionViewModel
+import com.akimov.wordsfactory.feature.question.wrapper.presentation.QuestionsWrapperViewModel
+import com.akimov.wordsfactory.feature.training.presentation.TrainingViewModel
+import com.akimov.wordsfactory.feature.trainingFinished.presentation.TrainingFinishedViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.viewmodel.dsl.viewModel

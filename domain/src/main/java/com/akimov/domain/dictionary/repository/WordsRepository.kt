@@ -3,6 +3,7 @@ package com.akimov.domain.dictionary.repository
 import com.akimov.domain.dictionary.model.WordWithMeaningsDto
 import com.akimov.domain.training.model.WordInfoDto
 import com.akimov.domain.training.model.WordTrainingDto
+import kotlinx.coroutines.flow.Flow
 
 interface WordsRepository {
     suspend fun searchWord(query: String): WordWithMeaningsDto
@@ -13,7 +14,11 @@ interface WordsRepository {
 
     suspend fun getWordsCount(): Int
 
+    fun getWordsCountFlow(): Flow<Int>
+
     suspend fun getWordsCount(name: String): Int
+
+    fun getStudiedWordsCountFlow(): Flow<Int>
 
     suspend fun getSortedByCoefficientWords(limit: Int): List<WordTrainingDto>
 

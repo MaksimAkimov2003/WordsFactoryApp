@@ -4,7 +4,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import com.akimov.wordsfactory.common.theme.success
 import com.akimov.wordsfactory.common.theme.yellow
-import com.akimov.wordsfactory.screens.training.presentation.CircleColor
+import com.akimov.wordsfactory.feature.training.presentation.CircleColor
 
 @Composable
 fun CircleColor.mapToCompose() =

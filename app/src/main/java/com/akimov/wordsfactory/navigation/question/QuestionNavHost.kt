@@ -11,7 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.akimov.domain.training.model.WordTrainingDto
-import com.akimov.wordsfactory.screens.question.QuestionScreen
+import com.akimov.wordsfactory.feature.question.QuestionScreen
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 

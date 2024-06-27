@@ -40,6 +40,9 @@ val ColorScheme.secondaryVariant: Color
 val ColorScheme.success: Color
     get() = Color(0xFF5BA092)
 
+val ColorScheme.primaryGradient: Color
+    get() = Color(0xFFF29F3F)
+
 @Composable
 fun WordsFactoryTheme(content: @Composable () -> Unit) {
     val colorScheme = LightColorScheme

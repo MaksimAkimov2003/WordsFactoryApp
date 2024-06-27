@@ -8,15 +8,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.akimov.wordsfactory.common.UiConstants
+import com.akimov.wordsfactory.feature.login.LoginScreen
+import com.akimov.wordsfactory.feature.onBoarding.OnBoardingScreen
+import com.akimov.wordsfactory.feature.question.wrapper.QuestionsWrapperScreen
+import com.akimov.wordsfactory.feature.register.RegisterScreen
+import com.akimov.wordsfactory.feature.splash.SplashScreen
+import com.akimov.wordsfactory.feature.trainingFinished.TrainingFinishedScreen
+import com.akimov.wordsfactory.feature.video.VideoViewHolder
+import com.akimov.wordsfactory.feature.video.player.VideoPlayerScreen
 import com.akimov.wordsfactory.navigation.bottomNav.BottomNavHost
-import com.akimov.wordsfactory.screens.login.LoginScreen
-import com.akimov.wordsfactory.screens.onBoarding.OnBoardingScreen
-import com.akimov.wordsfactory.screens.question.wrapper.QuestionsWrapperScreen
-import com.akimov.wordsfactory.screens.register.RegisterScreen
-import com.akimov.wordsfactory.screens.splash.SplashScreen
-import com.akimov.wordsfactory.screens.trainingFinished.TrainingFinishedScreen
-import com.akimov.wordsfactory.screens.video.VideoViewHolder
-import com.akimov.wordsfactory.screens.video.player.VideoPlayerScreen
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 

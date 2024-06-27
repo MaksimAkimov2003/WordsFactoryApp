@@ -1,7 +1,6 @@
 package com.akimov.wordsfactory.common.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -13,11 +12,6 @@ val Typography.extraLarge: TextStyle
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Bold,
         fontSize = 56.sp,
-    )
-
-val Typography.display1: TextStyle
-    get() = TextStyle(
-
     )
 
 val Typography.paragraphLarge: TextStyle
@@ -42,6 +36,22 @@ val Typography.heading1: TextStyle
         fontWeight = FontWeight.Medium,
         fontSize = 24.sp,
         color = inkDark
+    )
+
+val Typography.headingH5: TextStyle
+    get() = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Medium,
+        fontSize = 20.sp,
+        color = Color.Black
+    )
+
+val Typography.headingH3: TextStyle
+    get() = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Bold,
+        fontSize = 32.sp,
+        color = Color.White
     )
 
 val Typography.buttonMedium: TextStyle

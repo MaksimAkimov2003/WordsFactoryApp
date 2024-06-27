@@ -7,9 +7,9 @@ import com.akimov.domain.auth.repository.AuthRepository
 import com.akimov.domain.auth.useCase.CheckUserAuthUseCase
 import com.akimov.domain.auth.useCase.LoginUserUseCase
 import com.akimov.domain.auth.useCase.RegisterUserUseCase
-import com.akimov.wordsfactory.screens.login.LoginViewModel
-import com.akimov.wordsfactory.screens.register.RegisterViewModel
-import com.akimov.wordsfactory.screens.splash.SplashViewModel
+import com.akimov.wordsfactory.feature.login.LoginViewModel
+import com.akimov.wordsfactory.feature.register.RegisterViewModel
+import com.akimov.wordsfactory.feature.splash.SplashViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth

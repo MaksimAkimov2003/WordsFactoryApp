@@ -8,6 +8,7 @@ import androidx.room.Upsert
 import com.akimov.data.words.database.entity.DefinitionEntity
 import com.akimov.data.words.database.entity.WordEntity
 import com.akimov.data.words.database.pojo.WordWithDefinition
+import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 @Dao
@@ -20,6 +21,12 @@ interface WordsDao {
 
     @Query("SELECT COUNT(*) FROM words")
     suspend fun getCount(): Int
+
+    @Query("SELECT COUNT(*) FROM words")
+    fun getCountFlow(): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM words WHERE knowledgeCoefficient > 5")
+    fun getStudiedWordsCountFlow(): Flow<Int>
 
     @Query("SELECT COUNT(*) FROM words WHERE word = :word")
     suspend fun getCount(word: String): Int

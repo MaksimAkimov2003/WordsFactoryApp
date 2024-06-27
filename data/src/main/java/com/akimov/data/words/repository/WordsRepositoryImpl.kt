@@ -58,6 +58,9 @@ class WordsRepositoryImpl(
 
     override suspend fun getWordsCount() = dao.getCount()
     override suspend fun getWordsCount(name: String) = dao.getCount(name)
+    override fun getWordsCountFlow() = dao.getCountFlow()
+
+    override fun getStudiedWordsCountFlow() = dao.getStudiedWordsCountFlow()
 
     override suspend fun getSortedByCoefficientWords(limit: Int): List<WordTrainingDto> =
         withContext(Dispatchers.IO) {
