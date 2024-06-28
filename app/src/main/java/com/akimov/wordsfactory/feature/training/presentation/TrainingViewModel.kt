@@ -3,6 +3,7 @@ package com.akimov.wordsfactory.feature.training.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akimov.domain.dictionary.useCase.GetWordsInDictionaryCountUseCase
+import com.akimov.domain.statistics.useCase.SetUserStudiedTodayUseCase
 import com.akimov.domain.training.model.WordTrainingDto
 import com.akimov.domain.training.useCase.timer.ObserveTimerUseCase
 import com.akimov.domain.training.useCase.words.GetWordsForTrainingUseCase
@@ -22,6 +23,7 @@ const val TIMER_DURATION_SECONDS = 5
 class TrainingViewModel(
     private val getWordsInDictionaryCountUseCase: GetWordsInDictionaryCountUseCase,
     private val getWordsForTrainingUseCase: GetWordsForTrainingUseCase,
+    private val setUserStudiedTodayUseCase: SetUserStudiedTodayUseCase,
     observeTimerUseCase: ObserveTimerUseCase,
 ) : ViewModel() {
     private val _state: MutableStateFlow<TrainingScreenState> =
@@ -47,6 +49,7 @@ class TrainingViewModel(
                 }
                 if (second == 0) {
                     delay(timeMillis = 1000L)
+                    setUserStudiedTodayUseCase()
                     _effect.emit(
                         TrainingScreenEffect.NavigateNext(
                             wordsForTraining = checkNotNull(wordsForTraining) {

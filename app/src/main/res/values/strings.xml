@@ -37,4 +37,5 @@
     <string name="words">Words</string>
     <string name="remembered_words">I already remember</string>
     <string name="i_already_remember">I already remember</string>
+    <string name="time_to_study">Time to study!</string>
 </resources>

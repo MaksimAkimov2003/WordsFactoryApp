@@ -1,15 +1,16 @@
 package com.akimov.wordsfactory
 
 import android.app.Application
-import androidx.work.WorkManager
 import com.akimov.wordsfactory.di.authModule
 import com.akimov.wordsfactory.di.dictionaryModule
 import com.akimov.wordsfactory.di.ioModule
+import com.akimov.wordsfactory.di.notificationsModule
 import com.akimov.wordsfactory.di.onBoardingModule
 import com.akimov.wordsfactory.di.trainingModule
 import com.akimov.wordsfactory.di.videoModule
 import com.akimov.wordsfactory.di.widgetModule
-import com.akimov.wordsfactory.di.workersModule
+import com.akimov.wordsfactory.notifications.AlarmScheduler
+import com.akimov.wordsfactory.notifications.AppNotifications
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -18,20 +19,14 @@ import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 
 class App : Application() {
-    private val workManager: WorkManager by inject()
+    private val appNotifications by inject<AppNotifications>()
+    private val alarmScheduler by inject<AlarmScheduler>()
 
     override fun onCreate() {
         super.onCreate()
         initKoin()
-        setWidgetUpdate()
-    }
-
-    private fun setWidgetUpdate() {
-//        val request = PeriodicWorkRequestBuilder<UpdateWidgetWorker>(
-//            repeatInterval = UiConstants.WIDGET_UPDATE_INTERVAL_SECONDS,
-//            repeatIntervalTimeUnit = TimeUnit.SECONDS
-//        ).build()
-//        workManager.enqueue(request)
+        alarmScheduler.setAlarm()
+        appNotifications.createNotificationChannel()
     }
 
     private fun initKoin() {
@@ -46,7 +41,7 @@ class App : Application() {
                 trainingModule,
                 videoModule,
                 widgetModule,
-                workersModule
+                notificationsModule
             )
             workManagerFactory()
         }
