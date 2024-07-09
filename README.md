@@ -11,7 +11,7 @@ An Android📱🤖 app that makes it easy to find and learn new English 🇬🇧
 + **🎥Watch learning-videos**
 
 # Architecture
-There are 3 modules: **app**, **domain** and **data**.
+There are 3 modules: **app**, **domain** and **data**. The presentation layer pattern is **MVVM**
 
 ![image](https://github.com/MaksimAkimov2003/WordsFactoryApp/assets/101564073/be288d55-b7ac-4315-9821-b04f81b3487d)
 
