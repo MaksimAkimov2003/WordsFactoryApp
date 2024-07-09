@@ -8,7 +8,7 @@ An Android📱🤖 app that makes it easy to find and learn new English 🇬🇧
 + **📱Widget**: get information about your learning progress using a convenient widget
 + **🔔Notifications**: receive notifications about the need to take a test and improve your English every day
 + **📵Local storage of words** save words in your device's memory to access them offline
-+ **🎥Watch learning-videos**
++ **🎥Watch learning-videos in full-screen mode**
 
 # Architecture
 There are 3 modules: **app**, **domain** and **data**. The presentation layer pattern is **MVVM**
