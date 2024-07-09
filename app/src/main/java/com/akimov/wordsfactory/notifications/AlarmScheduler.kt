@@ -27,7 +27,7 @@ class AlarmScheduler(
             }
 
         alarmManager.setRepeating(
-            AlarmManager.RTC,
+            AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
             AlarmManager.INTERVAL_DAY,
             alarmIntent

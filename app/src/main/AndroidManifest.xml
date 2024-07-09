@@ -41,7 +41,14 @@
                 android:resource="@xml/my_app_widget_info" />
         </receiver>
 
-        <receiver android:name=".notifications.NotificationsReceiver" />
+        <receiver
+            android:name=".notifications.NotificationsReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+        </receiver>
 
         <provider
             android:name="androidx.startup.InitializationProvider"
