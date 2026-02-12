@@ -50,6 +50,6 @@ val authModule = module {
         LoginViewModel(loginUserUseCase = get())
     }
     viewModel {
-        SplashViewModel(checkUserAuthUseCase = get())
+        SplashViewModel()
     }
 }

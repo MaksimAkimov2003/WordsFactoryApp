@@ -8,8 +8,8 @@ object UiConstants {
     // endregion
 
     // region urls
-    const val HOST = "https://learnenglish.britishcouncil.org"
-    const val URL = "$HOST/general-english/video-zone"
+    const val HOST = "https://lingust.ru"
+    const val URL = "$HOST/english/english-lessons"
     // endregion
 
     const val WIDGET_UPDATE_INTERVAL_SECONDS = 15L

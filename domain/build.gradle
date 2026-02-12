@@ -9,6 +9,12 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
+
 dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.7.3"
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
